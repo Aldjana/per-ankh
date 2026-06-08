@@ -58,7 +58,7 @@ export default function Register() {
       });
 
       if (result?.session?.access_token) {
-        navigate("/dashboard");
+        navigate("/boards");
       } else {
         navigate("/login");
       }

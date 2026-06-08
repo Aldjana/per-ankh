@@ -1,5 +1,10 @@
 import api from "./api";
 
+export const getWorkspaceById = async (id) => {
+  const response = await api.get(`/workspaces/${id}`);
+  return response.data?.workspace || response.data;
+};
+
 export const getWorkspaces = async () => {
   const response = await api.get("/workspaces");
 

@@ -1,1 +1,74 @@
 @import "tailwindcss";
+
+@theme {
+  --font-sans: "Segoe UI", system-ui, -apple-system, sans-serif;
+  --color-brand-950: #07152f;
+  --color-brand-900: #0c2247;
+  --color-brand-800: #123066;
+  --color-surface: #f4f7fb;
+  --color-surface-elevated: #ffffff;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scrollbar discrète dans la sidebar */
+.sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+@utility btn-primary {
+  height: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(to right, #2563eb, #7c3aed);
+  color: white;
+  font-weight: 700;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s;
+  box-shadow: 0 4px 14px rgb(37 99 235 / 0.25);
+
+  &:hover {
+    opacity: 0.92;
+  }
+}
+
+@utility card {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240 / 0.8);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04);
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in-right 0.25s ease-out;
+}

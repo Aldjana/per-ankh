@@ -1,119 +1,110 @@
-import {
-    FiGrid,
-    FiFolder,
-    FiCheckSquare,
-    FiColumns,
-    FiFileText,
-    FiBell,
-    FiSettings,
-    FiLogOut,
-} from "react-icons/fi";
+import { FiLogOut, FiX } from "react-icons/fi";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { NAV_ITEMS, FOOTER_NAV } from "../config/navigation";
 
-export default function Sidebar() {
-    const navigate = useNavigate();
-    const { user, logout } = useAuth();
+const iconLinkClass = ({ isActive }) =>
+  `w-11 h-11 rounded-xl flex items-center justify-center text-lg transition ${
+    isActive
+      ? "bg-white text-brand-950 shadow-md"
+      : "text-slate-400 hover:bg-white/10 hover:text-white"
+  }`;
 
-    const handleLogout = () => {
-        logout();
-        navigate("/login");
-    };
+export default function Sidebar({ mobileOpen = false, onMobileClose }) {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
-    const menuItems = [
-        {
-            label: "Dashboard",
-            icon: <FiGrid />,
-            path: "/dashboard",
-        },
-        {
-            label: "Workspaces",
-            icon: <FiFolder />,
-            path: "/workspaces",
-        },
-        {
-            label: "Tâches",
-            icon: <FiCheckSquare />,
-            path: "/tasks",
-        },
-        {
-            label: "Kanban",
-            icon: <FiColumns />,
-            path: "/kanban",
-        },
-        {
-            label: "Notes",
-            icon: <FiFileText />,
-            path: "/notes",
-        },
-        {
-            label: "Notifications",
-            icon: <FiBell />,
-            path: "/notifications",
-        },
-        {
-            label: "Paramètres",
-            icon: <FiSettings />,
-            path: "/settings",
-        },
-    ];
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+    onMobileClose?.();
+  };
 
-    return (
-        <aside className="hidden lg:flex fixed left-0 top-0 h-screen w-[280px] bg-[#07152f] text-white flex-col justify-between z-50">
-            <div>
-                {/* LOGO */}
-                <div className="px-6 pt-5 pb-4 border-b border-white/10">
-                    <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-500 to-violet-600 flex items-center justify-center text-2xl font-black shadow-lg">
-                            P
-                        </div>
+  const initials = (user?.email || "U").charAt(0).toUpperCase();
 
-                        <div>
-                            <h1 className="text-2xl font-black leading-none">PER-ANKH</h1>
-                            <p className="text-xs text-blue-200 mt-1">
-                                Workspace Manager
-                            </p>
-                        </div>
-                    </div>
-                </div>
+  const panel = (
+    <div className="flex flex-col h-full items-center py-4">
+      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg font-black text-white shadow-lg mb-6 shrink-0">
+        P
+      </div>
 
-                {/* MENU */}
-                <nav className="px-4 py-5 space-y-1.5">
-                    {menuItems.map((item, index) => (
-                        <NavLink
-                            key={index}
-                            to={item.path}
-                            className={({ isActive }) =>
-                                `w-full flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-bold transition ${isActive
-                                    ? "bg-white text-[#07152f]"
-                                    : "text-blue-100 hover:bg-white/10 hover:text-white"
-                                }`
-                            }
-                        >
-                            <span className="text-lg">{item.icon}</span>
-                            <span>{item.label}</span>
-                        </NavLink>
-                    ))}
-                </nav>
-            </div>
+      <nav className="flex-1 flex flex-col items-center gap-1.5 w-full px-2">
+        {NAV_ITEMS.map((item, index) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={`${item.path}-${index}`}
+              to={item.path}
+              title={item.label}
+              className={iconLinkClass}
+              onClick={onMobileClose}
+            >
+              <Icon />
+            </NavLink>
+          );
+        })}
+      </nav>
 
-            {/* PROFIL + DÉCONNEXION */}
-            <div className="px-4 pb-4">
-                <div className="bg-white/10 border border-white/10 rounded-2xl p-3 mb-3">
-                    <p className="text-xs text-blue-100">Connecté avec</p>
-                    <p className="text-sm font-black mt-1 truncate">
-                        {user?.email || "Utilisateur"}
-                    </p>
-                </div>
+      <div className="flex flex-col items-center gap-2 shrink-0 px-2">
+        {FOOTER_NAV.map((item) => {
+          const Icon = item.icon;
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              title={item.label}
+              className={iconLinkClass}
+              onClick={onMobileClose}
+            >
+              <Icon />
+            </NavLink>
+          );
+        })}
 
-                <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white font-black px-4 py-3 rounded-2xl transition"
-                >
-                    <FiLogOut />
-                    Déconnexion
-                </button>
-            </div>
-        </aside>
-    );
+        <div
+          className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center text-xs font-black text-white mt-2"
+          title={user?.email}
+        >
+          {initials}
+        </div>
+
+        <button
+          type="button"
+          onClick={handleLogout}
+          title="Déconnexion"
+          className="w-9 h-9 rounded-xl text-slate-500 hover:text-red-400 hover:bg-red-500/10 flex items-center justify-center transition"
+        >
+          <FiLogOut />
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <>
+      <aside className="hidden lg:flex fixed left-0 top-0 z-50 h-screen w-[72px] bg-brand-950 border-r border-white/5">
+        {panel}
+      </aside>
+
+      {mobileOpen && (
+        <div className="lg:hidden fixed inset-0 z-[60]">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-900/60"
+            onClick={onMobileClose}
+          />
+          <aside className="absolute left-0 top-0 h-full w-[72px] bg-brand-950 shadow-2xl">
+            {panel}
+          </aside>
+          <button
+            type="button"
+            onClick={onMobileClose}
+            className="absolute top-4 left-20 w-9 h-9 rounded-xl bg-white text-slate-700 flex items-center justify-center shadow"
+          >
+            <FiX />
+          </button>
+        </div>
+      )}
+    </>
+  );
 }

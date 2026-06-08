@@ -2,137 +2,139 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Dashboard from "../pages/Dashboard";
-import Workspaces from "../pages/Workspaces";
-import Kanban from "../pages/Kanban";
-import Notes from "../pages/Notes";
+import Boards from "../pages/Boards";
+import Board from "../pages/Board";
+import BoardKanbanTab from "../pages/board/BoardKanbanTab";
+import BoardListTab from "../pages/board/BoardListTab";
+import BoardTimelineTab from "../pages/board/BoardTimelineTab";
+import BoardCalendarTab from "../pages/board/BoardCalendarTab";
+import BoardProgressTab from "../pages/board/BoardProgressTab";
+import BoardNotesTab from "../pages/board/BoardNotesTab";
+import BoardMembersTab from "../pages/board/BoardMembersTab";
 import Notifications from "../pages/Notifications";
-import Files from "../pages/Files";
-import Tasks from "../pages/Tasks";
+import Search from "../pages/Search";
+import Settings from "../pages/Settings";
 
 const PrivateRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                Chargement...
-            </div>
-        );
-    }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Chargement...
+      </div>
+    );
+  }
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace />;
-    }
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
-    return children;
+  return children;
 };
 
 const PublicRoute = ({ children }) => {
-    const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
 
-    if (loading) {
-        return (
-            <div className="min-h-screen flex items-center justify-center">
-                Chargement...
-            </div>
-        );
-    }
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Chargement...
+      </div>
+    );
+  }
 
-    if (isAuthenticated) {
-        return <Navigate to="/dashboard" replace />;
-    }
+  if (isAuthenticated) {
+    return <Navigate to="/boards" replace />;
+  }
 
-    return children;
+  return children;
 };
 
+function LegacyRedirect({ to }) {
+  return <Navigate to={to} replace />;
+}
+
 export default function AppRoutes() {
-    return (
-        <Routes>
-            <Route
-                path="/"
-                element={<Navigate to="/dashboard" replace />}
-            />
+  return (
+    <Routes>
+      <Route path="/" element={<Navigate to="/boards" replace />} />
 
-            <Route
-                path="/login"
-                element={
-                    <PublicRoute>
-                        <Login />
-                    </PublicRoute>
-                }
-            />
+      <Route
+        path="/login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="/register"
+        element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
+        }
+      />
 
-            <Route
-                path="/register"
-                element={
-                    <PublicRoute>
-                        <Register />
-                    </PublicRoute>
-                }
-            />
+      <Route
+        path="/boards"
+        element={
+          <PrivateRoute>
+            <Boards />
+          </PrivateRoute>
+        }
+      />
 
-            <Route
-                path="/dashboard"
-                element={
-                    <PrivateRoute>
-                        <Dashboard />
-                    </PrivateRoute>
-                }
-            />
+      <Route
+        path="/board/:workspaceId"
+        element={
+          <PrivateRoute>
+            <Board />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<BoardKanbanTab />} />
+        <Route path="list" element={<BoardListTab />} />
+        <Route path="timeline" element={<BoardTimelineTab />} />
+        <Route path="calendar" element={<BoardCalendarTab />} />
+        <Route path="progress" element={<BoardProgressTab />} />
+        <Route path="notes" element={<BoardNotesTab />} />
+        <Route path="members" element={<BoardMembersTab />} />
+      </Route>
 
-            <Route
-                path="/workspaces"
-                element={
-                    <PrivateRoute>
-                        <Workspaces />
-                    </PrivateRoute>
-                }
-            />
+      <Route
+        path="/notifications"
+        element={
+          <PrivateRoute>
+            <Notifications />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/search"
+        element={
+          <PrivateRoute>
+            <Search />
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <PrivateRoute>
+            <Settings />
+          </PrivateRoute>
+        }
+      />
 
-
-            <Route
-                path="/tasks"
-                element={
-                    <PrivateRoute>
-                        <Tasks />
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/kanban"
-                element={
-                    <PrivateRoute>
-                        <Kanban />
-                    </PrivateRoute>
-                }
-            />
-            <Route
-                path="/notes/:workspaceId"
-                element={
-                    <PrivateRoute>
-                        <Notes />
-                    </PrivateRoute>
-                }
-            />
-
-            <Route
-                path="/notifications"
-                element={
-                    <PrivateRoute>
-                        <Notifications />
-                    </PrivateRoute>
-                }
-            />
-
-            <Route
-                path="/files"
-                element={
-                    <PrivateRoute>
-                        <Files />
-                    </PrivateRoute>
-                }
-            />
-        </Routes>
-    );
+      <Route path="/dashboard" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/workspaces" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/kanban" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/tasks" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/notes" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/files" element={<LegacyRedirect to="/boards" />} />
+      <Route path="/members" element={<LegacyRedirect to="/boards" />} />
+    </Routes>
+  );
 }

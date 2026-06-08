@@ -36,7 +36,7 @@ export default function Login() {
 
     try {
       await login(formData);
-      navigate("/dashboard");
+      navigate("/boards");
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de la connexion.");
     } finally {
