@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { FiPlus, FiLoader, FiMessageCircle, FiThumbsUp } from "react-icons/fi";
+import { useAuth } from "../../context/AuthContext";
 import { createTask, moveTask } from "../../services/taskService";
+import { createComment, deleteComment } from "../../services/commentService";
 import TaskCardModal from "./TaskCardModal";
 
 const columnStatus = (title) => {
@@ -33,6 +35,7 @@ export default function KanbanBoard({
   loading,
   onRefresh,
 }) {
+  const { user } = useAuth();
   const [draggedTask, setDraggedTask] = useState(null);
   const [moving, setMoving] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
@@ -66,6 +69,8 @@ export default function KanbanBoard({
     }
   };
 
+  const [likingTaskId, setLikingTaskId] = useState(null);
+
   const handleAddCard = async (columnId) => {
     if (!newTitle.trim()) return;
     try {
@@ -83,6 +88,38 @@ export default function KanbanBoard({
       setError(err.response?.data?.message || "Création impossible.");
     } finally {
       setCreating(false);
+    }
+  };
+
+  const getUserLikeComment = (task) =>
+    task.comments?.find(
+      (comment) => comment?.content === "👍" && comment?.author_id === user?.id
+    );
+
+  const handleLikeTask = async (task) => {
+    if (!workspaceId && !task.workspace_id) return;
+    const existingLike = getUserLikeComment(task);
+    setLikingTaskId(task.id);
+
+    try {
+      setError("");
+      if (existingLike) {
+        await deleteComment(existingLike.id);
+      } else {
+        await createComment({
+          workspace_id: workspaceId || task.workspace_id,
+          content: "👍",
+          task_id: task.id,
+        });
+      }
+      await onRefresh();
+    } catch (err) {
+      setError(
+        err.response?.data?.message ||
+          "Impossible de mettre à jour le like de cette tâche."
+      );
+    } finally {
+      setLikingTaskId(null);
     }
   };
 
@@ -122,21 +159,16 @@ export default function KanbanBoard({
             >
               <div className="flex items-center justify-between mb-3 px-0.5">
                 <h3 className="font-bold text-slate-800 text-sm">{column.title}</h3>
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-bold text-slate-400">
-                    {columnTasks.length}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setAddingToColumn(column.id);
-                      setNewTitle("");
-                    }}
-                    className="w-7 h-7 rounded-lg text-slate-400 hover:bg-white hover:text-slate-700 flex items-center justify-center transition"
-                  >
-                    <FiPlus />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAddingToColumn(column.id);
+                    setNewTitle("");
+                  }}
+                  className="w-7 h-7 rounded-lg text-slate-400 hover:bg-white hover:text-slate-700 flex items-center justify-center transition"
+                >
+                  <FiPlus />
+                </button>
               </div>
 
               <div
@@ -146,6 +178,22 @@ export default function KanbanBoard({
               >
                 {columnTasks.map((task) => {
                   const prio = priorityBadge(task.priority);
+                  const taskLikes = task.comments
+                    ? task.comments.filter((comment) => comment?.content === "👍")
+                    : [];
+                  const taskVisibleComments = task.comments
+                    ? task.comments.filter((comment) => comment?.content !== "👍")
+                    : [];
+                  const commentCount =
+                    taskVisibleComments.length ?? task.comments_count ?? "—";
+                  const likeCount =
+                    typeof task.likes_count !== "undefined"
+                      ? task.likes_count
+                      : taskLikes.length;
+                  const userLike = taskLikes.find(
+                    (comment) => comment?.author_id === user?.id
+                  );
+
                   return (
                     <button
                       key={task.id}
@@ -202,13 +250,23 @@ export default function KanbanBoard({
                             </span>
                           )}
                         </div>
-                        <div className="flex items-center gap-2 text-slate-400">
-                          <span className="flex items-center gap-0.5 text-[10px]">
-                            <FiMessageCircle /> 0
+                        <div className="flex items-center gap-2 text-slate-400 text-[10px]">
+                          <span className="inline-flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-full">
+                            <FiMessageCircle />
+                            {commentCount}
                           </span>
-                          <span className="flex items-center gap-0.5 text-[10px]">
-                            <FiThumbsUp /> 0
-                          </span>
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLikeTask(task);
+                            }}
+                            disabled={likingTaskId === task.id}
+                            className="inline-flex items-center gap-1 bg-slate-100 px-2 py-1 rounded-full hover:bg-slate-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <FiThumbsUp />
+                            {likeCount}
+                          </button>
                         </div>
                       </div>
                     </button>

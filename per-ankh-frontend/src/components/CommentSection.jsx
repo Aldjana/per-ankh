@@ -19,6 +19,7 @@ export default function CommentSection({
   workspaceId,
   noteId = null,
   taskId = null,
+  onCommentChange = null,
 }) {
   const { user } = useAuth();
   const [comments, setComments] = useState([]);
@@ -89,6 +90,7 @@ export default function CommentSection({
 
       setContent("");
       await fetchComments();
+      onCommentChange?.();
     } catch (err) {
       setError(
         err.response?.data?.message || "Impossible d'ajouter le commentaire."
@@ -116,6 +118,7 @@ export default function CommentSection({
       await updateComment(commentId, { content: editContent.trim() });
       cancelEdit();
       await fetchComments();
+      onCommentChange?.();
     } catch (err) {
       setError(
         err.response?.data?.message || "Impossible de modifier le commentaire."
@@ -131,6 +134,7 @@ export default function CommentSection({
     try {
       await deleteComment(commentId);
       await fetchComments();
+      onCommentChange?.();
     } catch (err) {
       setError(
         err.response?.data?.message || "Impossible de supprimer le commentaire."
@@ -138,12 +142,20 @@ export default function CommentSection({
     }
   };
 
+  const visibleComments = comments.filter((comment) => comment?.content !== "👍");
+  const likeCount = comments.filter((comment) => comment?.content === "👍").length;
+
   return (
     <div className="mt-6 border-t border-slate-100 pt-5">
       <h4 className="font-black text-slate-900 flex items-center gap-2">
         <FiMessageCircle />
-        Commentaires ({comments.length})
+        Commentaires ({visibleComments.length})
       </h4>
+      {likeCount > 0 && (
+        <p className="text-xs text-slate-500 mt-1">
+          {likeCount} like{likeCount > 1 ? "s" : ""}
+        </p>
+      )}
 
       {error && (
         <p className="text-sm text-red-600 mt-3 font-semibold">{error}</p>
@@ -156,10 +168,10 @@ export default function CommentSection({
         </div>
       ) : (
         <div className="mt-4 space-y-3 max-h-64 overflow-y-auto">
-          {comments.length === 0 ? (
+          {visibleComments.length === 0 ? (
             <p className="text-sm text-slate-400">Aucun commentaire pour l'instant.</p>
           ) : (
-            comments.map((comment) => {
+            visibleComments.map((comment) => {
               const id = getCommentId(comment);
               const isOwner = getAuthorId(comment) === user?.id;
 

@@ -1,26 +1,13 @@
-import {
-  FiHome,
-  FiBarChart2,
-  FiUsers,
-  FiCalendar,
-  FiZap,
-  FiBell,
-  FiSettings,
-  FiLayout,
-} from "react-icons/fi";
+import { FiBarChart2, FiZap, FiSettings, FiLayout } from "react-icons/fi";
 
 /** Sidebar icônes — inspiré de la maquette */
 export const NAV_ITEMS = [
-  { path: "/boards", label: "Accueil", icon: FiHome },
   { path: "/boards", label: "Tableaux", icon: FiLayout },
   { path: "/search", label: "Analytique", icon: FiBarChart2 },
-  { path: "/boards", label: "Équipes", icon: FiUsers },
-  { path: "/search", label: "Calendrier", icon: FiCalendar },
   { path: "/notifications", label: "Activité", icon: FiZap },
 ];
 
 export const FOOTER_NAV = [
-  { path: "/notifications", label: "Notifications", icon: FiBell },
   { path: "/settings", label: "Paramètres", icon: FiSettings },
 ];
 

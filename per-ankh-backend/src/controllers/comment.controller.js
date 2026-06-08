@@ -16,11 +16,16 @@ const checkWorkspaceMember = async (workspaceId, userId) => {
   return data;
 };
 
+const normalizeUuid = (value) =>
+  value === undefined || value === null || value === "null" ? null : value;
+
 // CRÉER UN COMMENTAIRE
 export const createComment = async (req, res) => {
   try {
     const { workspace_id, note_id, task_id, content, mentions } = req.body;
     const userId = req.user.id;
+    const normalizedNoteId = normalizeUuid(note_id);
+    const normalizedTaskId = normalizeUuid(task_id);
 
     if (!workspace_id || !content) {
       return res.status(400).json({
@@ -28,7 +33,7 @@ export const createComment = async (req, res) => {
       });
     }
 
-    if (!note_id && !task_id) {
+    if (!normalizedNoteId && !normalizedTaskId) {
       return res.status(400).json({
         message: "Le commentaire doit être lié à une note ou à une tâche.",
       });
@@ -42,13 +47,47 @@ export const createComment = async (req, res) => {
       });
     }
 
+    if (content.trim() === "👍") {
+      const likeQuery = supabaseAdmin
+        .from("comments")
+        .select("id")
+        .eq("author_id", userId)
+        .eq("content", "👍");
+
+      if (normalizedTaskId) {
+        likeQuery.eq("task_id", normalizedTaskId);
+      } else {
+        likeQuery.is("task_id", null);
+      }
+
+      if (normalizedNoteId) {
+        likeQuery.eq("note_id", normalizedNoteId);
+      } else {
+        likeQuery.is("note_id", null);
+      }
+
+      const { data: existingLikes, error: likeError } = await likeQuery;
+
+      if (likeError) {
+        return res.status(400).json({
+          message: likeError.message,
+        });
+      }
+
+      if (Array.isArray(existingLikes) && existingLikes.length > 0) {
+        return res.status(409).json({
+          message: "Vous avez déjà liké cette tâche.",
+        });
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from("comments")
       .insert([
         {
           workspace_id,
-          note_id: note_id || null,
-          task_id: task_id || null,
+          note_id: normalizedNoteId,
+          task_id: normalizedTaskId,
           content,
           mentions: mentions || [],
           author_id: userId,

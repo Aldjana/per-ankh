@@ -126,6 +126,11 @@ export const getTasksByWorkspace = async (req, res) => {
         kanban_columns (
           id,
           title
+        ),
+        comments (
+          id,
+          content,
+          author_id
         )
       `)
       .eq("workspace_id", workspaceId)

@@ -35,6 +35,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
             <NavLink
               key={`${item.path}-${index}`}
               to={item.path}
+              end
               title={item.label}
               className={iconLinkClass}
               onClick={onMobileClose}

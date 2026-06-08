@@ -309,7 +309,11 @@ export default function TaskCardModal({
             )}
           </div>
 
-          <CommentSection workspaceId={workspaceId} taskId={task.id} />
+          <CommentSection
+            workspaceId={workspaceId}
+            taskId={task.id}
+            onCommentChange={onUpdated}
+          />
         </div>
 
         <div className="shrink-0 p-4 border-t border-slate-200 flex items-center justify-between gap-2 bg-slate-50">

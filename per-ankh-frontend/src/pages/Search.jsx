@@ -13,6 +13,7 @@ import PageHeader from "../components/PageHeader";
 import { getWorkspaces } from "../services/workspaceService";
 import { getWorkspaceMembers } from "../services/memberService";
 import { searchTasks } from "../services/searchService";
+import { getWorkspaceId, getWorkspaceName } from "../utils/workspace";
 
 export default function Search() {
   const [searchParams] = useSearchParams();
@@ -30,9 +31,6 @@ export default function Search() {
     tag: "",
     status: "",
   });
-
-  const getWorkspaceId = (w) => w?.id || w?.workspace_id || "";
-  const getWorkspaceName = (w) => w?.name || w?.title || "Sans nom";
 
   useEffect(() => {
     const q = searchParams.get("q");
