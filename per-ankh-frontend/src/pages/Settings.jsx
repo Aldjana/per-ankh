@@ -61,10 +61,10 @@ export default function Settings() {
             <FiShield />
             Sécurité
           </h2>
-          <p className="text-sm text-slate-500 mt-2 leading-6">
-            La réinitialisation du mot de passe sera disponible lorsque la route
+          {/* <p className="text-sm text-slate-500 mt-2 leading-6">
+            La réinitialisation  du mot de passe sera disponible lorsque la route
             API correspondante sera ajoutée au backend.
-          </p>
+          </p> */}
         </section>
       </div>
     </Layout>

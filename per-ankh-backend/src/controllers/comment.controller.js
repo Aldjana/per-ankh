@@ -19,6 +19,63 @@ const checkWorkspaceMember = async (workspaceId, userId) => {
 const normalizeUuid = (value) =>
   value === undefined || value === null || value === "null" ? null : value;
 
+// Extraire les mentions (@username ou @nom complet) du contenu
+const extractMentions = (content) => {
+  const mentionRegex = /@([^\s@]+(?:\s+[^\s@]+)*)/g;
+  const matches = content.matchAll(mentionRegex);
+  const mentions = [];
+  for (const match of matches) {
+    mentions.push(match[1].trim());
+  }
+  return [...new Set(mentions)]; // Déduplique les mentions
+};
+
+// Créer des notifications pour les mentions
+const createMentionNotifications = async (
+  workspaceId,
+  mentionedUsernames,
+  authorId,
+  taskId,
+  noteId
+) => {
+  if (!Array.isArray(mentionedUsernames) || mentionedUsernames.length === 0) {
+    return;
+  }
+
+  try {
+    // Chercher les profils avec ces usernames
+    const { data: profiles, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name")
+      .in("full_name", mentionedUsernames);
+
+    if (profileError || !profiles) {
+      return;
+    }
+
+    // Créer les notifications
+    const notifications = profiles
+      .filter((p) => p.id !== authorId) // Ne pas notifier l'auteur
+      .map((p) => ({
+        user_id: p.id,
+        workspace_id: workspaceId,
+        type: "mention",
+        title: "Vous avez été mentionné",
+        message: taskId
+          ? `Vous avez été mentionné dans un commentaire sur une tâche`
+          : `Vous avez été mentionné dans un commentaire sur une note`,
+        is_read: false,
+      }));
+
+    if (notifications.length > 0) {
+      await supabaseAdmin.from("notifications").insert(notifications);
+    }
+  } catch (err) {
+    console.error("Erreur lors de la création des notifications de mention:", err);
+  }
+};
+
+
 // CRÉER UN COMMENTAIRE
 export const createComment = async (req, res) => {
   try {
@@ -100,6 +157,18 @@ export const createComment = async (req, res) => {
       return res.status(400).json({
         message: error.message,
       });
+    }
+
+    // Créer des notifications pour les mentions
+    const extractedMentions = extractMentions(content);
+    if (extractedMentions.length > 0) {
+      await createMentionNotifications(
+        workspace_id,
+        extractedMentions,
+        userId,
+        normalizedTaskId,
+        normalizedNoteId
+      );
     }
 
     return res.status(201).json({
@@ -237,7 +306,7 @@ export const updateComment = async (req, res) => {
 
     const { data: comment, error: commentError } = await supabaseAdmin
       .from("comments")
-      .select("workspace_id, author_id")
+      .select("workspace_id, author_id, task_id, note_id")
       .eq("id", id)
       .single();
 
@@ -275,6 +344,18 @@ export const updateComment = async (req, res) => {
       return res.status(400).json({
         message: error.message,
       });
+    }
+
+    // Créer des notifications pour les mentions
+    const extractedMentions = extractMentions(content);
+    if (extractedMentions.length > 0) {
+      await createMentionNotifications(
+        comment.workspace_id,
+        extractedMentions,
+        userId,
+        comment.task_id,
+        comment.note_id
+      );
     }
 
     return res.status(200).json({

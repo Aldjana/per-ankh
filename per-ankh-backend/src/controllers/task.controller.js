@@ -46,6 +46,16 @@ export const createTask = async (req, res) => {
       });
     }
 
+    // Valider que l'utilisateur assigné est un membre du workspace
+    if (assigned_to) {
+      const assignedMember = await checkWorkspaceMember(workspace_id, assigned_to);
+      if (!assignedMember) {
+        return res.status(400).json({
+          message: "L'utilisateur assigné n'est pas un membre de ce workspace.",
+        });
+      }
+    }
+
     const { data, error } = await supabaseAdmin
       .from("tasks")
       .insert([
@@ -172,7 +182,7 @@ export const updateTask = async (req, res) => {
 
     const { data: task, error: taskError } = await supabaseAdmin
       .from("tasks")
-      .select("workspace_id")
+      .select("workspace_id, created_by, assigned_to")
       .eq("id", id)
       .single();
 
@@ -187,6 +197,17 @@ export const updateTask = async (req, res) => {
     if (!member) {
       return res.status(403).json({
         message: "Accès refusé.",
+      });
+    }
+
+    // Vérifier les permissions : seulement creator, assignee, ou admin peut modifier
+    const isCreator = task.created_by === userId;
+    const isAssignee = task.assigned_to === userId;
+    const isAdmin = ["owner", "admin"].includes(member.role);
+
+    if (!isCreator && !isAssignee && !isAdmin) {
+      return res.status(403).json({
+        message: "Vous n'avez pas la permission de modifier cette tâche.",
       });
     }
 
@@ -212,8 +233,8 @@ export const updateTask = async (req, res) => {
       });
     }
 
-    // Notification si une tâche est assignée à un utilisateur
-    if (assigned_to) {
+    // Notification seulement si c'est une NOUVELLE assignation
+    if (assigned_to && assigned_to !== task.assigned_to) {
       await supabaseAdmin.from("notifications").insert([
         {
           user_id: assigned_to,
@@ -321,7 +342,7 @@ export const deleteTask = async (req, res) => {
 
     const { data: task, error: taskError } = await supabaseAdmin
       .from("tasks")
-      .select("workspace_id")
+      .select("workspace_id, created_by")
       .eq("id", id)
       .single();
 
@@ -336,6 +357,16 @@ export const deleteTask = async (req, res) => {
     if (!member) {
       return res.status(403).json({
         message: "Accès refusé.",
+      });
+    }
+
+    // Seulement le créateur ou un admin peut supprimer
+    const isCreator = task.created_by === userId;
+    const isAdmin = ["owner", "admin"].includes(member.role);
+
+    if (!isCreator && !isAdmin) {
+      return res.status(403).json({
+        message: "Seul le créateur ou un administrateur peut supprimer cette tâche.",
       });
     }
 

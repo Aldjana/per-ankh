@@ -9,10 +9,12 @@ import {
   FiTag,
   FiPaperclip,
   FiUpload,
+  FiFileText,
 } from "react-icons/fi";
 import CommentSection from "../CommentSection";
 import { updateTask, deleteTask, moveTask } from "../../services/taskService";
 import { getWorkspaceMembers } from "../../services/memberService";
+import { getNotesByWorkspace } from "../../services/noteService";
 import {
   getFilesByTask,
   uploadFile,
@@ -29,6 +31,7 @@ export default function TaskCardModal({
 }) {
   const [members, setMembers] = useState([]);
   const [files, setFiles] = useState([]);
+  const [notes, setNotes] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -60,15 +63,18 @@ export default function TaskCardModal({
   const loadExtras = async () => {
     if (!workspaceId || !task?.id) return;
     try {
-      const [memberList, fileList] = await Promise.all([
+      const [memberList, fileList, noteList] = await Promise.all([
         getWorkspaceMembers(workspaceId),
         getFilesByTask(task.id),
+        getNotesByWorkspace(workspaceId).catch(() => []),
       ]);
       setMembers(Array.isArray(memberList) ? memberList : []);
       setFiles(Array.isArray(fileList) ? fileList : []);
+      setNotes(Array.isArray(noteList) ? noteList : []);
     } catch {
       setMembers([]);
       setFiles([]);
+      setNotes([]);
     }
   };
 
@@ -279,30 +285,65 @@ export default function TaskCardModal({
             {files.length === 0 ? (
               <p className="text-xs text-slate-400">Aucun fichier.</p>
             ) : (
-              <ul className="space-y-1">
-                {files.map((f) => (
+              <ul className="space-y-2">
+                {files.map((f) => {
+                  const isImage = f.file_type?.startsWith("image/");
+                  return (
+                    <li
+                      key={f.id}
+                      className="flex flex-col gap-2 bg-slate-50 rounded-lg p-2"
+                    >
+                      <div className="flex items-center justify-between">
+                        <a
+                          href={f.file_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="text-blue-600 truncate text-xs"
+                        >
+                          {f.file_name}
+                        </a>
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            await deleteFile(f.id);
+                            loadExtras();
+                          }}
+                          className="text-red-500 shrink-0 ml-2"
+                        >
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                      {isImage && (
+                        <img
+                          src={f.file_url}
+                          alt={f.file_name}
+                          className="max-h-32 max-w-full rounded-lg object-cover"
+                        />
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          <div className="border-t border-slate-100 pt-4">
+            <span className="text-sm font-black flex items-center gap-2">
+              <FiFileText /> Notes du board
+            </span>
+            {notes.length === 0 ? (
+              <p className="text-xs text-slate-400 mt-2">Aucune note.</p>
+            ) : (
+              <ul className="space-y-2 mt-2 max-h-32 overflow-y-auto">
+                {notes.slice(0, 3).map((note) => (
                   <li
-                    key={f.id}
-                    className="flex items-center justify-between text-sm bg-slate-50 rounded-lg px-3 py-2"
+                    key={note.id}
+                    className="bg-yellow-50 border border-yellow-200 rounded-lg p-2"
                   >
-                    <a
-                      href={f.file_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-blue-600 truncate"
-                    >
-                      {f.file_name}
-                    </a>
-                    <button
-                      type="button"
-                      onClick={async () => {
-                        await deleteFile(f.id);
-                        loadExtras();
-                      }}
-                      className="text-red-500 shrink-0 ml-2"
-                    >
-                      <FiTrash2 />
-                    </button>
+                    <p className="text-xs font-bold text-yellow-900">{note.title}</p>
+                    <p className="text-xs text-yellow-800 line-clamp-2 mt-1">
+                      {note.content || "Pas de contenu"}
+                    </p>
                   </li>
                 ))}
               </ul>

@@ -7,6 +7,7 @@ import {
   FiEdit2,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import { getWorkspaceMembers } from "../services/memberService";
 import {
   getCommentsByNote,
   getCommentsByTask,
@@ -29,6 +30,9 @@ export default function CommentSection({
   const [content, setContent] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [editContent, setEditContent] = useState("");
+  const [members, setMembers] = useState([]);
+  const [mentionSuggestions, setMentionSuggestions] = useState([]);
+  const [showMentions, setShowMentions] = useState(false);
 
   const fetchComments = useCallback(async () => {
     if (!noteId && !taskId) return;
@@ -52,6 +56,20 @@ export default function CommentSection({
     }
   }, [noteId, taskId]);
 
+  // Charger les membres du workspace
+  useEffect(() => {
+    const fetchMembers = async () => {
+      if (!workspaceId) return;
+      try {
+        const list = await getWorkspaceMembers(workspaceId);
+        setMembers(Array.isArray(list) ? list : []);
+      } catch {
+        setMembers([]);
+      }
+    };
+    fetchMembers();
+  }, [workspaceId]);
+
   useEffect(() => {
     fetchComments();
   }, [fetchComments]);
@@ -71,6 +89,48 @@ export default function CommentSection({
       hour: "2-digit",
       minute: "2-digit",
     });
+  };
+
+  // Détecteur de mentions
+  const handleContentChange = (text) => {
+    setContent(text);
+
+    // Détecter si l'utilisateur tape @ suivi de caractères
+    const lastAtIndex = text.lastIndexOf("@");
+    if (lastAtIndex === -1) {
+      setShowMentions(false);
+      return;
+    }
+
+    const afterAt = text.substring(lastAtIndex + 1);
+    // Si le dernier caractère est un espace après @, ne pas afficher les suggestions
+    if (afterAt.includes(" ")) {
+      setShowMentions(false);
+      return;
+    }
+
+    // Filtrer les membres
+    const suggestions = members.filter((m) => {
+      const name = m.profiles?.full_name || m.user_id || "";
+      return name.toLowerCase().includes(afterAt.toLowerCase());
+    });
+
+    if (afterAt.length > 0 && suggestions.length > 0) {
+      setMentionSuggestions(suggestions);
+      setShowMentions(true);
+    } else {
+      setShowMentions(false);
+    }
+  };
+
+  // Sélectionner une mention
+  const selectMention = (member) => {
+    const lastAtIndex = content.lastIndexOf("@");
+    const beforeAt = content.substring(0, lastAtIndex);
+    const name = member.profiles?.full_name || member.user_id;
+    const newContent = beforeAt + "@" + name + " ";
+    setContent(newContent);
+    setShowMentions(false);
   };
 
   const handleSubmit = async (e) => {
@@ -244,21 +304,39 @@ export default function CommentSection({
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
-        <input
-          type="text"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Ajouter un commentaire... Utilisez @ pour mentionner"
-          className="flex-1 h-11 bg-slate-100 rounded-2xl px-4 outline-none text-sm border border-transparent focus:border-blue-500 focus:bg-white"
-        />
-        <button
-          type="submit"
-          disabled={saving || !content.trim()}
-          className="h-11 px-4 rounded-2xl bg-blue-600 text-white font-black flex items-center gap-2 disabled:opacity-50"
-        >
-          {saving ? <FiLoader className="animate-spin" /> : <FiSend />}
-        </button>
+      <form onSubmit={handleSubmit} className="mt-4 relative">
+        <div className="flex gap-2">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              value={content}
+              onChange={(e) => handleContentChange(e.target.value)}
+              placeholder="Ajouter un commentaire... Tapez @ pour mentionner"
+              className="w-full h-11 bg-slate-100 rounded-2xl px-4 outline-none text-sm border border-transparent focus:border-blue-500 focus:bg-white"
+            />
+            {showMentions && mentionSuggestions.length > 0 && (
+              <div className="absolute top-full left-0 mt-1 w-full bg-white border border-slate-200 rounded-xl shadow-lg z-50 max-h-40 overflow-y-auto">
+                {mentionSuggestions.map((member) => (
+                  <button
+                    key={member.id}
+                    type="button"
+                    onClick={() => selectMention(member)}
+                    className="w-full text-left px-4 py-2 hover:bg-slate-100 text-sm font-semibold text-slate-900 border-b border-slate-100 last:border-b-0"
+                  >
+                    @{member.profiles?.full_name || member.user_id}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+          <button
+            type="submit"
+            disabled={saving || !content.trim()}
+            className="h-11 px-4 rounded-2xl bg-blue-600 text-white font-black flex items-center gap-2 disabled:opacity-50 hover:bg-blue-700 transition"
+          >
+            {saving ? <FiLoader className="animate-spin" /> : <FiSend />}
+          </button>
+        </div>
       </form>
     </div>
   );

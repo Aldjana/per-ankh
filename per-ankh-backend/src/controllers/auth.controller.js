@@ -1,4 +1,11 @@
 import { supabase, supabaseAdmin } from "../config/supabase.js";
+
+// Validation regex pour email
+const isValidEmail = (email) => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
 // INSCRIPTION
 export const register = async (req, res) => {
     try {
@@ -7,6 +14,20 @@ export const register = async (req, res) => {
         if (!email || !password || !full_name) {
             return res.status(400).json({
                 message: "Email, mot de passe et nom complet sont obligatoires.",
+            });
+        }
+
+        // Valider le format de l'email
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                message: "Adresse email invalide.",
+            });
+        }
+
+        // Valider la longueur du mot de passe
+        if (password.length < 6) {
+            return res.status(400).json({
+                message: "Le mot de passe doit avoir au moins 6 caractères.",
             });
         }
 
@@ -64,6 +85,13 @@ export const login = async (req, res) => {
         if (!email || !password) {
             return res.status(400).json({
                 message: "Email et mot de passe sont obligatoires.",
+            });
+        }
+
+        // Valider le format de l'email
+        if (!isValidEmail(email)) {
+            return res.status(400).json({
+                message: "Adresse email invalide.",
             });
         }
 

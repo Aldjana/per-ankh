@@ -1,12 +1,34 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { FiMenu, FiSearch, FiBell } from "react-icons/fi";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { getMyNotifications } from "../services/notificationService";
 import { getRouteMeta } from "../config/navigation";
 
 export default function Navbar({ onMenuOpen }) {
   const navigate = useNavigate();
   const location = useLocation();
   const [query, setQuery] = useState("");
+  const [notificationCount, setNotificationCount] = useState(0);
+
+  // Récupérer le nombre de notifications non lues
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const list = await getMyNotifications();
+        const unreadCount = (Array.isArray(list) ? list : []).filter(
+          (n) => !n.is_read && !n.isRead && !n.read
+        ).length;
+        setNotificationCount(unreadCount);
+      } catch {
+        setNotificationCount(0);
+      }
+    };
+
+    fetchNotifications();
+    // Rafraîchir chaque 30 secondes
+    const interval = setInterval(fetchNotifications, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const meta = getRouteMeta(location.pathname);
   const isSearchPage = location.pathname === "/search";
@@ -69,7 +91,7 @@ export default function Navbar({ onMenuOpen }) {
           <button
             type="button"
             onClick={() => navigate("/notifications")}
-            className={`w-10 h-10 rounded-xl flex items-center justify-center transition ${
+            className={`relative w-10 h-10 rounded-xl flex items-center justify-center transition ${
               location.pathname === "/notifications"
                 ? "bg-blue-600 text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -77,6 +99,11 @@ export default function Navbar({ onMenuOpen }) {
             aria-label="Notifications"
           >
             <FiBell />
+            {notificationCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[20px] h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center px-1">
+                {notificationCount > 99 ? "99+" : notificationCount}
+              </span>
+            )}
           </button>
         </div>
       </div>

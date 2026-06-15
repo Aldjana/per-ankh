@@ -71,23 +71,23 @@ export default function Register() {
 
   return (
     <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#4b1392_100%)] flex items-center justify-center px-4 py-6 text-white">
-      <div className="w-full max-w-[390px] rounded-[18px] border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-6 py-6">
-        <div className="flex items-center gap-4">
-          <div className="w-[50px] h-[50px] rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[26px] font-semibold shadow-xl">
+      <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
             P
           </div>
 
-          <h1 className="text-[28px] font-bold tracking-wide leading-none">
+          <h1 className="text-[24px] sm:text-[28px] font-bold tracking-wide leading-none">
             PER-ANKH
           </h1>
         </div>
 
-        <div className="mt-7">
-          <h2 className="text-[24px] font-bold leading-tight">
+        <div className="mt-5 sm:mt-7">
+          <h2 className="text-[20px] sm:text-[24px] font-bold leading-tight">
             Créer un compte PER-ANKH
           </h2>
 
-          <p className="mt-3 text-[14px] leading-6 text-blue-100/75 font-semibold">
+          <p className="mt-2 sm:mt-3 text-[13px] sm:text-[14px] leading-6 text-blue-100/75 font-semibold">
             Rejoignez votre espace de travail et commencez à collaborer
             efficacement.
           </p>
@@ -99,21 +99,21 @@ export default function Register() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <form onSubmit={handleSubmit} className="mt-5 sm:mt-6 space-y-3">
           <div>
-            <label className="block text-xs font-bold mb-2">
+            <label className="block text-[11px] sm:text-xs font-bold mb-2">
               Nom complet
             </label>
 
-            <div className="h-[44px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiUser className="text-[17px] text-blue-200/75" />
+            <div className="h-[44px] rounded-lg sm:rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
+              <FiUser className="text-[16px] sm:text-[17px] text-blue-200/75 shrink-0" />
 
               <input
                 type="text"
                 name="full_name"
                 value={formData.full_name}
                 onChange={handleChange}
-                placeholder="Jean Dupont"
+                placeholder="Aldjana Seck"
                 required
                 className="w-full bg-transparent outline-none text-sm placeholder:text-white/40"
               />
@@ -121,17 +121,17 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold mb-2">Email</label>
+            <label className="block text-[11px] sm:text-xs font-bold mb-2">Email</label>
 
-            <div className="h-[44px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiMail className="text-[17px] text-blue-200/75" />
+            <div className="h-[44px] rounded-lg sm:rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
+              <FiMail className="text-[16px] sm:text-[17px] text-blue-200/75 shrink-0" />
 
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="votre@email.com"
+                placeholder="votre@gmail.com"
                 required
                 className="w-full bg-transparent outline-none text-sm placeholder:text-white/40"
               />
@@ -139,12 +139,12 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-xs font-bold mb-2">
+            <label className="block text-[11px] sm:text-xs font-bold mb-2">
               Mot de passe
             </label>
 
-            <div className="h-[44px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiLock className="text-[17px] text-blue-200/75" />
+            <div className="h-[44px] rounded-lg sm:rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
+              <FiLock className="text-[16px] sm:text-[17px] text-blue-200/75 shrink-0" />
 
               <input
                 type={showPassword ? "text" : "password"}

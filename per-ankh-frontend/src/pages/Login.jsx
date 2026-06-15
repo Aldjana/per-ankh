@@ -46,23 +46,23 @@ export default function Login() {
 
   return (
     <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#4b1392_100%)] flex items-center justify-center px-4 py-6 text-white">
-      <div className="w-full max-w-[390px] rounded-[18px] border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-6 py-6">
-        <div className="flex items-center gap-4">
-          <div className="w-[50px] h-[50px] rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[26px] font-semibold shadow-xl">
+      <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
             P
           </div>
 
-          <h1 className="text-[28px] font-bold tracking-wide leading-none">
+          <h1 className="text-[24px] sm:text-[28px] font-bold tracking-wide leading-none">
             PER-ANKH
           </h1>
         </div>
 
-        <div className="mt-7">
-          <h2 className="text-[24px] font-bold leading-tight">
+        <div className="mt-5 sm:mt-7">
+          <h2 className="text-[20px] sm:text-[24px] font-bold leading-tight">
             Bienvenue sur PER-ANKH
           </h2>
 
-          <p className="mt-3 text-[14px] leading-6 text-blue-100/75 font-semibold">
+          <p className="mt-2 sm:mt-3 text-[13px] sm:text-[14px] leading-6 text-blue-100/75 font-semibold">
             Connectez-vous pour gérer vos projets et collaborer avec votre
             équipe.
           </p>
@@ -74,12 +74,12 @@ export default function Login() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-7">
+        <form onSubmit={handleSubmit} className="mt-5 sm:mt-7">
           <div>
-            <label className="block text-xs font-bold mb-2.5">Email</label>
+            <label className="block text-[11px] sm:text-xs font-bold mb-2">Email</label>
 
-            <div className="h-[48px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiMail className="text-[17px] text-blue-200/75" />
+            <div className="h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
+              <FiMail className="text-[16px] sm:text-[17px] text-blue-200/75 shrink-0" />
 
               <input
                 type="email"
@@ -93,13 +93,13 @@ export default function Login() {
             </div>
           </div>
 
-          <div className="mt-5">
-            <label className="block text-xs font-bold mb-2.5">
+          <div className="mt-4 sm:mt-5">
+            <label className="block text-[11px] sm:text-xs font-bold mb-2">
               Mot de passe
             </label>
 
-            <div className="h-[48px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiLock className="text-[17px] text-blue-200/75" />
+            <div className="h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
+              <FiLock className="text-[16px] sm:text-[17px] text-blue-200/75 shrink-0" />
 
               <input
                 type={showPassword ? "text" : "password"}
@@ -114,16 +114,16 @@ export default function Login() {
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="text-blue-200/75 hover:text-white transition"
+                className="text-blue-200/75 hover:text-white transition shrink-0"
               >
-                {showPassword ? <FiEyeOff size={17} /> : <FiEye size={17} />}
+                {showPassword ? <FiEyeOff size={16} /> : <FiEye size={16} />}
               </button>
             </div>
 
-            <div className="text-right mt-3">
+            <div className="text-right mt-2 sm:mt-3">
               <button
                 type="button"
-                className="text-xs text-blue-200/80 hover:text-white transition"
+                className="text-[11px] sm:text-xs text-blue-200/80 hover:text-white transition"
               >
                 Mot de passe oublié ?
               </button>
@@ -133,14 +133,14 @@ export default function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="mt-4 w-full h-[48px] rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition disabled:opacity-60 flex items-center justify-center gap-3"
+            className="mt-3 sm:mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-xs sm:text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition disabled:opacity-60 flex items-center justify-center gap-2 sm:gap-3"
           >
             {loading ? "Connexion..." : "Se connecter"}
-            {!loading && <FiArrowRight className="text-lg" />}
+            {!loading && <FiArrowRight className="text-base sm:text-lg" />}
           </button>
         </form>
 
-        <p className="mt-7 text-center text-xs text-blue-100/70">
+        <p className="mt-5 sm:mt-7 text-center text-[11px] sm:text-xs text-blue-100/70">
           Vous n'avez pas de compte ?{" "}
           <button
             type="button"

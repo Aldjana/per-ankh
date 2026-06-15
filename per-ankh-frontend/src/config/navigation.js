@@ -1,6 +1,5 @@
 import { FiBarChart2, FiZap, FiSettings, FiLayout } from "react-icons/fi";
 
-/** Sidebar icônes — inspiré de la maquette */
 export const NAV_ITEMS = [
   { path: "/boards", label: "Tableaux", icon: FiLayout },
   { path: "/search", label: "Analytique", icon: FiBarChart2 },
@@ -11,14 +10,13 @@ export const FOOTER_NAV = [
   { path: "/settings", label: "Paramètres", icon: FiSettings },
 ];
 
-/** Onglets du board — comme la capture */
+
 export const BOARD_TABS = [
   { id: "list", label: "Liste", path: "list" },
   { id: "board", label: "Tableau", path: "" },
   { id: "timeline", label: "Chronologie", path: "timeline" },
   { id: "calendar", label: "Calendrier", path: "calendar" },
   { id: "progress", label: "Progression", path: "progress" },
-  { id: "notes", label: "Notes", path: "notes" },
   { id: "members", label: "Membres", path: "members" },
 ];
 

@@ -55,7 +55,7 @@ export default function Board() {
   return (
     <Layout fullWidth hideNavbar>
       <div className="flex flex-col min-h-screen bg-[#f0f2f8]">
-        {/* En-tête projet — style capture */}
+      
         <header className="shrink-0 bg-white border-b border-slate-200/80 px-4 sm:px-6 pt-4 pb-0">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-4">
             <div className="flex items-center gap-3 min-w-0">

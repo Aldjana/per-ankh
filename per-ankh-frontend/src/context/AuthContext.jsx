@@ -11,11 +11,13 @@ export const AuthProvider = ({ children }) => {
   const register = async (formData) => {
     const res = await api.post("/auth/register", formData);
 
-    if (res.data?.session?.access_token) {
-      localStorage.setItem("per_ankh_token", res.data.session.access_token);
-      setToken(res.data.session.access_token);
-      setUser(res.data.user);
+    if (!res.data?.user) {
+      throw new Error("Enregistrement échoué : données utilisateur manquantes");
     }
+
+    // Note: Le backend n'envoie pas le session token pour register
+    // L'utilisateur doit faire un login après register
+    setUser(res.data.user);
 
     return res.data;
   };
@@ -30,10 +32,18 @@ export const AuthProvider = ({ children }) => {
     return res.data;
   };
 
-  const logout = () => {
-    localStorage.removeItem("per_ankh_token");
-    setToken(null);
-    setUser(null);
+  const logout = async () => {
+    try {
+      // Appeler l'API pour logout côté serveur
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Erreur lors de la déconnexion:", error);
+    } finally {
+      // Nettoyer le localStorage et le state peu importe le résultat
+      localStorage.removeItem("per_ankh_token");
+      setToken(null);
+      setUser(null);
+    }
   };
 
   const getMe = async () => {

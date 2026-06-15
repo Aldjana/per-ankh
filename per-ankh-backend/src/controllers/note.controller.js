@@ -16,6 +16,60 @@ const checkWorkspaceMember = async (workspaceId, userId) => {
   return data;
 };
 
+// Extraire les mentions (@username ou @nom complet) du contenu
+const extractMentions = (content) => {
+  const mentionRegex = /@([^\s@]+(?:\s+[^\s@]+)*)/g;
+  const matches = content.matchAll(mentionRegex);
+  const mentions = [];
+  for (const match of matches) {
+    mentions.push(match[1].trim());
+  }
+  return [...new Set(mentions)]; // Déduplique les mentions
+};
+
+// Créer des notifications pour les mentions
+const createMentionNotifications = async (
+  workspaceId,
+  mentionedUsernames,
+  authorId,
+  noteId
+) => {
+  if (!Array.isArray(mentionedUsernames) || mentionedUsernames.length === 0) {
+    return;
+  }
+
+  try {
+    // Chercher les profils avec ces usernames
+    const { data: profiles, error: profileError } = await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name")
+      .in("full_name", mentionedUsernames);
+
+    if (profileError || !profiles) {
+      return;
+    }
+
+    // Créer les notifications
+    const notifications = profiles
+      .filter((p) => p.id !== authorId) // Ne pas notifier l'auteur
+      .map((p) => ({
+        user_id: p.id,
+        workspace_id: workspaceId,
+        type: "mention",
+        title: "Vous avez été mentionné",
+        message: `Vous avez été mentionné dans une note`,
+        is_read: false,
+      }));
+
+    if (notifications.length > 0) {
+      await supabaseAdmin.from("notifications").insert(notifications);
+    }
+  } catch (err) {
+    console.error("Erreur lors de la création des notifications de mention:", err);
+  }
+};
+
+
 // CRÉER UNE NOTE
 export const createNote = async (req, res) => {
   try {
@@ -54,6 +108,17 @@ export const createNote = async (req, res) => {
       return res.status(400).json({
         message: error.message,
       });
+    }
+
+    // Créer des notifications pour les mentions
+    const extractedMentions = extractMentions(content || "");
+    if (extractedMentions.length > 0) {
+      await createMentionNotifications(
+        workspace_id,
+        extractedMentions,
+        userId,
+        data.id
+      );
     }
 
     return res.status(201).json({
@@ -160,7 +225,7 @@ export const updateNote = async (req, res) => {
 
     const { data: note, error: noteError } = await supabaseAdmin
       .from("notes")
-      .select("workspace_id")
+      .select("workspace_id, created_by")
       .eq("id", id)
       .single();
 
@@ -194,6 +259,17 @@ export const updateNote = async (req, res) => {
       return res.status(400).json({
         message: error.message,
       });
+    }
+
+    // Créer des notifications pour les mentions
+    const extractedMentions = extractMentions(content || "");
+    if (extractedMentions.length > 0) {
+      await createMentionNotifications(
+        note.workspace_id,
+        extractedMentions,
+        note.created_by,
+        id
+      );
     }
 
     return res.status(200).json({

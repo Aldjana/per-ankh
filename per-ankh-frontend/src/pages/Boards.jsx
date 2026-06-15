@@ -23,7 +23,7 @@ import {
   getWorkspaceDescription,
 } from "../utils/workspace";
 
-/** Page d'accueil type Trello — liste des boards */
+
 export default function Boards() {
   const navigate = useNavigate();
   const [workspaces, setWorkspaces] = useState([]);
@@ -123,7 +123,7 @@ export default function Boards() {
       <div className="space-y-5">
         <PageHeader
           title="Mes tableaux"
-          description="Chaque board contient un Kanban (À faire → En cours → Terminé), des notes et des membres — comme sur Trello."
+          description="Chaque board contient un Kanban (À faire → En cours → Terminé), des notes et des membres "
           actions={
             <button type="button" onClick={openCreate} className="btn-primary">
               <FiPlus />

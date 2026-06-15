@@ -1,4 +1,4 @@
-/** Normalise une entrée API (workspace_members + workspaces imbriqué) */
+
 export function unwrapWorkspace(entry) {
   if (!entry) return {};
   return entry.workspaces || entry.workspace || entry.data || entry;
