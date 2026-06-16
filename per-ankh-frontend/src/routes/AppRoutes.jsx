@@ -128,13 +128,6 @@ export default function AppRoutes() {
         }
       />
 
-      <Route path="/dashboard" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/workspaces" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/kanban" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/tasks" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/notes" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/files" element={<LegacyRedirect to="/boards" />} />
-      <Route path="/members" element={<LegacyRedirect to="/boards" />} />
     </Routes>
   );
 }

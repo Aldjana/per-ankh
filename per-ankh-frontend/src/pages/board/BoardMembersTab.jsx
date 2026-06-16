@@ -57,9 +57,7 @@ export default function BoardMembersTab() {
 
   return (
     <div className="card p-5 max-w-3xl space-y-6">
-      <p className="text-sm text-slate-500">
-        Membres de ce board — rôles owner, admin, member (API backend).
-      </p>
+     
       {error && (
         <p className="text-sm text-red-600 font-semibold">{error}</p>
       )}
@@ -67,7 +65,7 @@ export default function BoardMembersTab() {
         <input
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
-          placeholder="UUID utilisateur (profiles.id)"
+          placeholder="ID utilisateur "
           className="flex-1 min-w-[200px] h-10 rounded-lg border border-slate-200 px-3 text-sm"
           required
         />

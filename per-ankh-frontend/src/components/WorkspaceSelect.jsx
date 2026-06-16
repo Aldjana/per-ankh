@@ -1,4 +1,4 @@
-/** Sélecteur de workspace réutilisable dans les pages métier */
+
 export default function WorkspaceSelect({
   workspaces,
   value,

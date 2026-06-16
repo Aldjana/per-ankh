@@ -123,7 +123,7 @@ export default function Boards() {
       <div className="space-y-5">
         <PageHeader
           title="Mes tableaux"
-          description="Chaque board contient un Kanban (À faire → En cours → Terminé), des notes et des membres "
+          // description="Chaque board contient un Kanban (À faire → En cours → Terminé), des notes et des membres "
           actions={
             <button type="button" onClick={openCreate} className="btn-primary">
               <FiPlus />
@@ -156,9 +156,7 @@ export default function Boards() {
           <div className="card p-12 text-center">
             <FiFolder className="text-5xl text-slate-300 mx-auto" />
             <h2 className="font-black text-xl mt-4">Aucun board</h2>
-            <p className="text-slate-500 mt-2">
-              Créez un board : le backend ajoute automatiquement 3 colonnes Kanban.
-            </p>
+          
             <button type="button" onClick={openCreate} className="btn-primary mt-6">
               <FiPlus /> Créer mon premier board
             </button>

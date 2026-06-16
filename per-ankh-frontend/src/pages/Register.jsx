@@ -19,11 +19,10 @@ export default function Register() {
     full_name: "",
     email: "",
     password: "",
-    confirmPassword: "",
+   
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -38,15 +37,12 @@ export default function Register() {
     e.preventDefault();
     setError("");
 
-    if (formData.password.length < 6) {
-      setError("Le mot de passe doit contenir au moins 6 caractères.");
+    if (formData.password.length < 8) {
+      setError("Le mot de passe doit contenir au moins 8 caractères.");
       return;
     }
 
-    if (formData.password !== formData.confirmPassword) {
-      setError("Les mots de passe ne correspondent pas.");
-      return;
-    }
+    
 
     setLoading(true);
 
@@ -151,7 +147,7 @@ export default function Register() {
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                placeholder="Minimum 6 caractères"
+                placeholder="Minimum 8 caractères"
                 required
                 className="w-full bg-transparent outline-none text-sm placeholder:text-white/40"
               />
@@ -166,37 +162,7 @@ export default function Register() {
             </div>
           </div>
 
-          <div>
-            <label className="block text-xs font-bold mb-2">
-              Confirmer le mot de passe
-            </label>
-
-            <div className="h-[44px] rounded-xl border border-white/20 bg-white/[0.13] px-3 flex items-center gap-3 focus-within:border-blue-300 transition">
-              <FiCheckCircle className="text-[17px] text-blue-200/75" />
-
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                placeholder="Confirmer le mot de passe"
-                required
-                className="w-full bg-transparent outline-none text-sm placeholder:text-white/40"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                className="text-blue-200/75 hover:text-white transition"
-              >
-                {showConfirmPassword ? (
-                  <FiEyeOff size={17} />
-                ) : (
-                  <FiEye size={17} />
-                )}
-              </button>
-            </div>
-          </div>
+         
 
           <button
             type="submit"

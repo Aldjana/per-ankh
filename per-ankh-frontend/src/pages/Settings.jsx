@@ -43,7 +43,7 @@ export default function Settings() {
             Se déconnecter
           </button>
         </section>
-
+{/* 
         <section className="card p-5 sm:p-6 space-y-3">
           <h2 className="font-black text-slate-900 flex items-center gap-2">
             <FiZap />
@@ -54,18 +54,18 @@ export default function Settings() {
               ? "Supabase Realtime est configuré. Le Kanban et les notifications se synchronisent automatiquement entre utilisateurs."
               : "Ajoutez VITE_SUPABASE_URL et VITE_SUPABASE_ANON_KEY dans .env pour activer la synchronisation."}
           </p>
-        </section>
-
+        </section> */}
+{/* 
         <section className="card p-5 sm:p-6">
           <h2 className="font-black text-slate-900 flex items-center gap-2">
             <FiShield />
             Sécurité
           </h2>
-          {/* <p className="text-sm text-slate-500 mt-2 leading-6">
+          <p className="text-sm text-slate-500 mt-2 leading-6">
             La réinitialisation  du mot de passe sera disponible lorsque la route
             API correspondante sera ajoutée au backend.
-          </p> */}
-        </section>
+          </p>
+        </section> */}
       </div>
     </Layout>
   );

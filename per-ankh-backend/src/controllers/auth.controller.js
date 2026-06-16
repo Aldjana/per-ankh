@@ -25,9 +25,9 @@ export const register = async (req, res) => {
         }
 
         // Valider la longueur du mot de passe
-        if (password.length < 6) {
+        if (password.length < 8) {
             return res.status(400).json({
-                message: "Le mot de passe doit avoir au moins 6 caractères.",
+                message: "Le mot de passe doit avoir au moins 8 caractères.",
             });
         }
 
