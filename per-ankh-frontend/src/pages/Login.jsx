@@ -123,6 +123,7 @@ export default function Login() {
             <div className="text-right mt-2 sm:mt-3">
               <button
                 type="button"
+                onClick={() => navigate("/forgot-password")}
                 className="text-[11px] sm:text-xs text-blue-200/80 hover:text-white transition"
               >
                 Mot de passe oublié ?

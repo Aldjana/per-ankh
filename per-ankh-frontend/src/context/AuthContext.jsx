@@ -15,8 +15,7 @@ export const AuthProvider = ({ children }) => {
       throw new Error("Enregistrement échoué : données utilisateur manquantes");
     }
 
-    // Note: Le backend n'envoie pas le session token pour register
-    // L'utilisateur doit faire un login après register
+   
     setUser(res.data.user);
 
     return res.data;
@@ -44,6 +43,16 @@ export const AuthProvider = ({ children }) => {
       setToken(null);
       setUser(null);
     }
+  };
+
+  const forgotPassword = async (email) => {
+    const res = await api.post("/auth/forgot-password", { email });
+    return res.data;
+  };
+
+  const resetPassword = async (password) => {
+    const res = await api.post("/auth/reset-password", { password });
+    return res.data;
   };
 
   const getMe = async () => {
@@ -77,6 +86,8 @@ export const AuthProvider = ({ children }) => {
         register,
         login,
         logout,
+        forgotPassword,
+        resetPassword,
         isAuthenticated: !!token,
       }}
     >
