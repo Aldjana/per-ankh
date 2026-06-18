@@ -1,10 +1,7 @@
 import { useEffect } from "react";
 import { supabase, isSupabaseConfigured } from "../services/supabaseClient";
 
-/**
- * Écoute les changements Supabase Realtime et déclenche un rafraîchissement.
- * Ne fait rien si VITE_SUPABASE_URL / VITE_SUPABASE_ANON_KEY sont absents.
- */
+//  Écoute les changements Supabase Realtime et déclenche un rafraîchissement.
 export function useRealtimeRefresh({
   channelName,
   table,

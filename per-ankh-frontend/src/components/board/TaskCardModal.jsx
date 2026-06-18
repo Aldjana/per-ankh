@@ -9,12 +9,9 @@ import {
   FiTag,
   FiPaperclip,
   FiUpload,
-  FiFileText,
 } from "react-icons/fi";
-import CommentSection from "../CommentSection";
 import { updateTask, deleteTask, moveTask } from "../../services/taskService";
 import { getWorkspaceMembers } from "../../services/memberService";
-import { getNotesByWorkspace } from "../../services/noteService";
 import {
   getFilesByTask,
   uploadFile,
@@ -31,7 +28,6 @@ export default function TaskCardModal({
 }) {
   const [members, setMembers] = useState([]);
   const [files, setFiles] = useState([]);
-  const [notes, setNotes] = useState([]);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -63,18 +59,15 @@ export default function TaskCardModal({
   const loadExtras = async () => {
     if (!workspaceId || !task?.id) return;
     try {
-      const [memberList, fileList, noteList] = await Promise.all([
+      const [memberList, fileList] = await Promise.all([
         getWorkspaceMembers(workspaceId),
         getFilesByTask(task.id),
-        getNotesByWorkspace(workspaceId).catch(() => []),
       ]);
       setMembers(Array.isArray(memberList) ? memberList : []);
       setFiles(Array.isArray(fileList) ? fileList : []);
-      setNotes(Array.isArray(noteList) ? noteList : []);
     } catch {
       setMembers([]);
       setFiles([]);
-      setNotes([]);
     }
   };
 
@@ -326,35 +319,6 @@ export default function TaskCardModal({
               </ul>
             )}
           </div>
-
-          <div className="border-t border-slate-100 pt-4">
-            <span className="text-sm font-black flex items-center gap-2">
-              <FiFileText /> Notes du board
-            </span>
-            {notes.length === 0 ? (
-              <p className="text-xs text-slate-400 mt-2">Aucune note.</p>
-            ) : (
-              <ul className="space-y-2 mt-2 max-h-32 overflow-y-auto">
-                {notes.slice(0, 3).map((note) => (
-                  <li
-                    key={note.id}
-                    className="bg-yellow-50 border border-yellow-200 rounded-lg p-2"
-                  >
-                    <p className="text-xs font-bold text-yellow-900">{note.title}</p>
-                    <p className="text-xs text-yellow-800 line-clamp-2 mt-1">
-                      {note.content || "Pas de contenu"}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-
-          <CommentSection
-            workspaceId={workspaceId}
-            taskId={task.id}
-            onCommentChange={onUpdated}
-          />
         </div>
 
         <div className="shrink-0 p-4 border-t border-slate-200 flex items-center justify-between gap-2 bg-slate-50">

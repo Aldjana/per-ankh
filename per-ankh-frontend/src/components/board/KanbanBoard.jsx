@@ -52,6 +52,7 @@ export default function KanbanBoard({
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [savingNote, setSavingNote] = useState(false);
+  const [selectedTaskForComments, setSelectedTaskForComments] = useState(null);
 
   const handleCreateNote = async (e) => {
     e.preventDefault();
@@ -304,10 +305,17 @@ export default function KanbanBoard({
                             )}
                           </div>
                           <div className="flex items-center gap-1 text-slate-400 text-[8px] sm:text-[10px] shrink-0">
-                            <span className="inline-flex items-center gap-0.5 sm:gap-1 bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px]">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTaskForComments(task);
+                              }}
+                              className="inline-flex items-center gap-0.5 sm:gap-1 bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] hover:bg-blue-100 hover:text-blue-600 transition"
+                            >
                               <FiMessageCircle />
                               {commentCount}
-                            </span>
+                            </button>
                             <button
                               type="button"
                               onClick={(e) => {
@@ -525,6 +533,40 @@ export default function KanbanBoard({
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal commentaires uniquement */}
+      {selectedTaskForComments && (
+        <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-end">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            onClick={() => setSelectedTaskForComments(null)}
+            aria-label="Fermer"
+          />
+          <div className="relative w-full sm:max-w-md bg-white shadow-2xl flex flex-col animate-slide-in max-h-[80vh] sm:rounded-2xl">
+            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between shrink-0">
+              <p className="text-sm font-bold text-slate-900">
+                {selectedTaskForComments.title}
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelectedTaskForComments(null)}
+                className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5">
+              <CommentSection
+                workspaceId={workspaceId}
+                taskId={selectedTaskForComments.id}
+                onCommentChange={onRefresh}
+              />
             </div>
           </div>
         </div>

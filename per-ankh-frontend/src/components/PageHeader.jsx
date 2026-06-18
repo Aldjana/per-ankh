@@ -1,7 +1,4 @@
-/**
- * En-tête de page unifié — à placer en haut du contenu de chaque page.
- * Si title/description sont omis, les valeurs de la route courante sont utilisées.
- */
+
 import { useLocation } from "react-router-dom";
 import { getRouteMeta } from "../config/navigation";
 
