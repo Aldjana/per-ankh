@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { FiPlus, FiLoader, FiTrash2, FiShield } from "react-icons/fi";
+import { toast } from "react-toastify";
 import {
   getWorkspaceMembers,
   addWorkspaceMember,
@@ -56,9 +57,10 @@ export default function BoardMembersTab() {
 
       await addWorkspaceMember(payload);
       setUserIdentifier("");
+      toast.success("Membre ajouté avec succès.");
       await load();
     } catch (err) {
-      setError(err.response?.data?.message || "Erreur lors de l'ajout");
+      toast.error(err.response?.data?.message || "Erreur lors de l'ajout.");
     } finally {
       setAdding(false);
     }

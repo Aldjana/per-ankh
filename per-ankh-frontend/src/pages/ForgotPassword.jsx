@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiMail, FiArrowLeft, FiArrowRight, FiCheckCircle } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import { toast } from "react-toastify";
+
 
 export default function ForgotPassword() {
   const navigate = useNavigate();
@@ -19,16 +21,18 @@ export default function ForgotPassword() {
 
     try {
       await forgotPassword(email);
+      toast.success("Lien de réinitialisation envoyé avec succès.");
       setSuccess(true);
     } catch (err) {
-      setError(err.response?.data?.message || "Erreur lors de l'envoi de l'email.");
+      toast.error(err.response?.data?.message || "Erreur lors de l'envoi de l'email.");
+     
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#4b1392_100%)] flex items-center justify-center px-4 py-6 text-white">
+    <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#173b92_100%)] flex items-center justify-center px-4 py-6 text-white">  
       <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
         <button
           onClick={() => navigate("/login")}
@@ -67,13 +71,13 @@ export default function ForgotPassword() {
 
         {success ? (
           <div className="mt-5 sm:mt-7">
-            <div className="rounded-xl border border-green-300/30 bg-green-500/15 px-4 py-4 text-center">
+            {/* <div className="rounded-xl border border-green-300/30 bg-green-500/15 px-4 py-4 text-center">
               <FiCheckCircle className="mx-auto text-2xl text-green-300 mb-2" />
               <p className="text-xs text-green-100 font-semibold">
                 Si l'email existe, un lien de réinitialisation a été envoyé à
                 votre adresse email.
               </p>
-            </div>
+            </div> */}
             <button
               onClick={() => navigate("/login")}
               className="mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-xs sm:text-sm shadow-xl shadow-slate-950/30 hover:scale-[1.01] transition flex items-center justify-center gap-2 sm:gap-3"

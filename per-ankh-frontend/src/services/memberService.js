@@ -1,5 +1,5 @@
 import api from "./api";
-
+import { toast } from "react-toastify";
 const normalizeMembers = (data) => {
   if (Array.isArray(data)) return data;
   if (Array.isArray(data?.members)) return data.members;
@@ -24,5 +24,7 @@ export const updateMemberRole = async (memberId, role) => {
 
 export const removeWorkspaceMember = async (memberId) => {
   const response = await api.delete(`/members/${memberId}`);
+  toast.success("Membre supprimé avec succès.");
   return response.data;
+  
 };

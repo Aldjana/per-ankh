@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   FiMail,
   FiLock,
@@ -36,9 +37,11 @@ export default function Login() {
 
     try {
       await login(formData);
+      toast.success("Connexion réussie.");
       navigate("/boards");
     } catch (err) {
-      setError(err.response?.data?.message || "Erreur lors de la connexion.");
+     
+      toast.error("Erreur lors de la connexion.");
     } finally {
       setLoading(false);
     }
@@ -67,11 +70,7 @@ export default function Login() {
         </p>
       </div>
 
-      {error && (
-        <div className="mt-4 rounded-xl border border-red-300/30 bg-red-500/15 px-3 py-2 text-xs text-red-100">
-          {error}
-        </div>
-      )}
+     
 
       <form onSubmit={handleSubmit} className="mt-5 sm:mt-7">
         <div>

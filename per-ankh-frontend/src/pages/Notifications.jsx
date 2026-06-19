@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   FiBell,
   FiCheck,
@@ -125,12 +126,11 @@ export default function Notifications() {
     try {
       setActionLoading(true);
       await markNotificationAsRead(getNotificationId(notification));
+      toast.success("Notification marquée comme lue.");
       await fetchNotifications();
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Impossible de marquer la notification comme lue."
-      );
+      
+      toast.error(err.response?.data?.message || "Impossible de marquer la notification comme lue.");
     } finally {
       setActionLoading(false);
     }
@@ -141,12 +141,11 @@ export default function Notifications() {
       setActionLoading(true);
       setError("");
       await markAllNotificationsAsRead();
+      toast.success("Toutes les notifications ont été marquées comme lues.");
       await fetchNotifications();
+
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Impossible de marquer toutes les notifications comme lues."
-      );
+      toast.error(err.response?.data?.message || "Impossible de marquer toutes les notifications comme lues.");
     } finally {
       setActionLoading(false);
     }
@@ -166,10 +165,7 @@ export default function Notifications() {
       await deleteNotification(getNotificationId(notificationToDelete));
       await fetchNotifications();
     } catch (err) {
-      setError(
-        err.response?.data?.message ||
-          "Impossible de supprimer cette notification."
-      );
+      toast.error(err.response?.data?.message || "Impossible de supprimer cette notification.");
     } finally {
       setDeleting(false);
       setShowDeleteConfirm(false);

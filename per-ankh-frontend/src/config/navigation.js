@@ -23,22 +23,21 @@ export const BOARD_TABS = [
 export const ROUTE_META = {
   "/boards": {
     title: "Mes projets",
-    section: "PER-ANKH",
+   
     description: "Choisissez un projet ou créez-en un nouveau.",
   },
   "/notifications": {
     title: "Notifications",
-    section: "Compte",
+    
     description: "Assignations, mentions et changements de statut.",
   },
   "/settings": {
     title: "Paramètres",
-    section: "Compte",
+    
     description: "Profil",
   },
   "/search": {
     title: "Recherche",
-    section: "Board",
     description: "Trouver des tâches dans vos projets.",
   },
 };

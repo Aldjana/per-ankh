@@ -66,7 +66,8 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#173b92_100%)] flex items-center justify-center px-4 py-6 text-white">      <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
+    <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#173b92_100%)] flex items-center justify-center px-4 py-6 text-white">  
+        <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
       <div className="flex items-center gap-3 sm:gap-4">
         <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-slate-800 flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
           P

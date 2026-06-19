@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
 import {
   FiX,
   FiTrash2,
@@ -102,6 +104,7 @@ export default function TaskCardModal({
       }
       onUpdated?.();
       onClose();
+      toast.success("Tâche mise à jour avec succès.");
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de l'enregistrement.");
     } finally {
@@ -115,9 +118,10 @@ export default function TaskCardModal({
       setError("");
       await deleteTask(task.id);
       onDeleted?.();
+      toast.success("Tâche supprimée avec succès.");
       onClose();
     } catch (err) {
-      setError(err.response?.data?.message || "Impossible de supprimer.");
+      toast.error(err.response?.data?.message || "Impossible de supprimer.");
     } finally {
       setDeleting(false);
       setShowDeleteConfirm(false);

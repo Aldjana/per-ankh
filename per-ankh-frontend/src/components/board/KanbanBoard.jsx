@@ -6,6 +6,7 @@ import { createComment, deleteComment } from "../../services/commentService";
 import { createNote, deleteNote } from "../../services/noteService";
 import TaskCardModal from "./TaskCardModal";
 import CommentSection from "../CommentSection";
+import { toast } from "react-toastify";
 
 const columnStatus = (title) => {
   const t = (title || "").toLowerCase();
@@ -52,6 +53,7 @@ export default function KanbanBoard({
   const [noteTitle, setNoteTitle] = useState("");
   const [noteContent, setNoteContent] = useState("");
   const [savingNote, setSavingNote] = useState(false);
+  const [selectedTaskForComments, setSelectedTaskForComments] = useState(null);
 
   const handleCreateNote = async (e) => {
     e.preventDefault();
@@ -120,12 +122,15 @@ export default function KanbanBoard({
         workspace_id: workspaceId,
         column_id: columnId,
         title: newTitle.trim(),
+
       });
       setNewTitle("");
       setAddingToColumn(null);
+      toast.success("Tâche créée avec succès.");
       await onRefresh();
     } catch (err) {
       setError(err.response?.data?.message || "Création impossible.");
+      toast.error(err.response?.data?.message || "Création impossible.");
     } finally {
       setCreating(false);
     }
@@ -156,7 +161,7 @@ export default function KanbanBoard({
     } catch (err) {
       setError(
         err.response?.data?.message ||
-          "Impossible de mettre à jour le like de cette tâche."
+        "Impossible de mettre à jour le like de cette tâche."
       );
     } finally {
       setLikingTaskId(null);
@@ -212,9 +217,8 @@ export default function KanbanBoard({
               </div>
 
               <div
-                className={`flex-1 rounded-xl sm:rounded-2xl p-2 sm:p-3 space-y-2 sm:space-y-2.5 min-h-[150px] sm:min-h-[200px] transition ${
-                  draggedTask ? "bg-blue-50/60 ring-2 ring-blue-200/60" : "bg-slate-200/40"
-                }`}
+                className={`flex-1 rounded-xl sm:rounded-2xl p-2 sm:p-3 space-y-2 sm:space-y-2.5 min-h-[150px] sm:min-h-[200px] transition ${draggedTask ? "bg-blue-50/60 ring-2 ring-blue-200/60" : "bg-slate-200/40"
+                  }`}
               >
                 {columnTasks.map((task) => {
                   const prio = priorityBadge(task.priority);
@@ -242,9 +246,8 @@ export default function KanbanBoard({
                       onDragStart={() => setDraggedTask(task)}
                       onDragEnd={() => setDraggedTask(null)}
                       onClick={() => setSelectedTask(task)}
-                      className={`w-full text-left bg-white rounded-xl shadow-sm border border-slate-100/80 overflow-hidden hover:shadow-md transition cursor-grab active:cursor-grabbing ${
-                        draggedTask?.id === task.id ? "opacity-50 rotate-1" : ""
-                      }`}
+                      className={`w-full text-left bg-white rounded-xl shadow-sm border border-slate-100/80 overflow-hidden hover:shadow-md transition cursor-grab active:cursor-grabbing ${draggedTask?.id === task.id ? "opacity-50 rotate-1" : ""
+                        }`}
                     >
                       {task.files && task.files.length > 0 && (
                         <div className="w-full h-32 bg-slate-100 flex items-center justify-center overflow-hidden">
@@ -286,7 +289,7 @@ export default function KanbanBoard({
                           <div className="flex items-center gap-1 sm:gap-2 min-w-0">
                             {task.assigned_to_profile?.full_name ? (
                               <div
-                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center text-[7px] sm:text-[9px] font-black text-white shrink-0"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-600 flex items-center justify-center text-[7px] sm:text-[9px] font-black text-white shrink-0"
                                 title={task.assigned_to_profile.full_name}
                               >
                                 {task.assigned_to_profile.full_name.charAt(0)}
@@ -304,10 +307,17 @@ export default function KanbanBoard({
                             )}
                           </div>
                           <div className="flex items-center gap-1 text-slate-400 text-[8px] sm:text-[10px] shrink-0">
-                            <span className="inline-flex items-center gap-0.5 sm:gap-1 bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px]">
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedTaskForComments(task);
+                              }}
+                              className="inline-flex items-center gap-0.5 sm:gap-1 bg-slate-100 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] hover:bg-blue-100 hover:text-blue-600 transition"
+                            >
                               <FiMessageCircle />
                               {commentCount}
-                            </span>
+                            </button>
                             <button
                               type="button"
                               onClick={(e) => {
@@ -326,11 +336,10 @@ export default function KanbanBoard({
                                 e.stopPropagation();
                                 setShowNotesModal(true);
                               }}
-                              className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold transition ${
-                                notes.length > 0
+                              className={`inline-flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[8px] sm:text-[10px] font-bold transition ${notes.length > 0
                                   ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-200"
                                   : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                              }`}
+                                }`}
                             >
                               <FiFileText />
                               {notes.length > 0 ? notes.length : "0"}
@@ -364,7 +373,7 @@ export default function KanbanBoard({
                         type="button"
                         onClick={() => handleAddCard(column.id)}
                         disabled={creating}
-                        className="btn-primary h-8 text-xs px-3"
+                        className="h-8 px-6 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium flex items-center gap-2 disabled:opacity-50"
                       >
                         {creating ? "…" : "Ajouter"}
                       </button>
@@ -472,11 +481,10 @@ export default function KanbanBoard({
                         key={note.id}
                         type="button"
                         onClick={() => setSelectedNote(note)}
-                        className={`w-full text-left p-3 rounded-lg border transition ${
-                          selectedNote?.id === note.id
+                        className={`w-full text-left p-3 rounded-lg border transition ${selectedNote?.id === note.id
                             ? "bg-blue-50 border-blue-300"
                             : "bg-white border-slate-200 hover:border-slate-300"
-                        }`}
+                          }`}
                       >
                         <h3 className="font-bold text-slate-900 text-sm line-clamp-1">{note.title}</h3>
                         <p className="text-xs text-slate-600 line-clamp-2 mt-1">{note.content}</p>
@@ -516,8 +524,8 @@ export default function KanbanBoard({
 
                     {/* Commentaires */}
                     <div className="flex-1 overflow-y-auto p-6">
-                      <CommentSection 
-                        workspaceId={workspaceId} 
+                      <CommentSection
+                        workspaceId={workspaceId}
                         noteId={selectedNote.id}
                         onCommentChange={onRefresh}
                       />
@@ -525,6 +533,40 @@ export default function KanbanBoard({
                   </div>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal commentaires uniquement */}
+      {selectedTaskForComments && (
+        <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-end">
+          <button
+            type="button"
+            className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+            onClick={() => setSelectedTaskForComments(null)}
+            aria-label="Fermer"
+          />
+          <div className="relative w-full sm:max-w-md bg-white shadow-2xl flex flex-col animate-slide-in max-h-[80vh] sm:rounded-2xl">
+            <div className="px-5 py-4 border-b border-slate-200 flex items-center justify-between shrink-0">
+              <p className="text-sm font-bold text-slate-900">
+                {selectedTaskForComments.title}
+              </p>
+              <button
+                type="button"
+                onClick={() => setSelectedTaskForComments(null)}
+                className="w-9 h-9 rounded-lg bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"
+              >
+                <FiX />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-5">
+              <CommentSection
+                workspaceId={workspaceId}
+                taskId={selectedTaskForComments.id}
+                onCommentChange={onRefresh}
+              />
             </div>
           </div>
         </div>

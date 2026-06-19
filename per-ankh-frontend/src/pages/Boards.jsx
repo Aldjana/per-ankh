@@ -23,6 +23,8 @@ import {
   getWorkspaceName,
   getWorkspaceDescription,
 } from "../utils/workspace";
+import { toast } from "react-toastify";
+
 
 
 export default function Boards() {
@@ -106,6 +108,7 @@ export default function Boards() {
       }
     } catch (err) {
       setError(err.response?.data?.message || "Erreur.");
+      
     } finally {
       setSaving(false);
     }
