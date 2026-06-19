@@ -140,7 +140,8 @@ export default function Boards() {
           title="Mes tableaux"
           // description="Chaque board contient un Kanban (À faire → En cours → Terminé), des notes et des membres "
           actions={
-            <button type="button" onClick={openCreate} className="btn-primary">
+            <button type="button" onClick={openCreate} className="h-12 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50"
+            >
               <FiPlus />
               Nouveau board
             </button>
@@ -171,7 +172,7 @@ export default function Boards() {
           <div className="card p-12 text-center">
             <FiFolder className="text-5xl text-slate-300 mx-auto" />
             <h2 className="font-black text-xl mt-4">Aucun board</h2>
-          
+
             <button type="button" onClick={openCreate} className="btn-primary mt-6">
               <FiPlus /> Créer mon premier board
             </button>
@@ -198,7 +199,7 @@ export default function Boards() {
                     role="button"
                     tabIndex={0}
                     onClick={(e) => openEdit(w, e)}
-                    onKeyDown={() => {}}
+                    onKeyDown={() => { }}
                     className="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center"
                   >
                     <FiEdit2 />
@@ -207,7 +208,7 @@ export default function Boards() {
                     role="button"
                     tabIndex={0}
                     onClick={(e) => handleDelete(w, e)}
-                    onKeyDown={() => {}}
+                    onKeyDown={() => { }}
                     className="w-8 h-8 rounded-lg bg-red-500/40 flex items-center justify-center"
                   >
                     <FiTrash2 />
@@ -218,8 +219,7 @@ export default function Boards() {
             <button
               type="button"
               onClick={openCreate}
-              className="card border-2 border-dashed border-slate-300 min-h-[140px] flex flex-col items-center justify-center text-slate-500 hover:border-blue-400 hover:text-blue-600 transition"
-            >
+              className="group card p-5 text-left hover:ring-2 hover:ring-slate-300 hover:shadow-lg transition min-h-[140px] flex flex-col justify-center items-center bg-slate-100 text-slate-900 border-0">
               <FiPlus className="text-2xl" />
               <span className="font-bold text-sm mt-2">Nouveau board</span>
             </button>
@@ -261,7 +261,7 @@ export default function Boards() {
               >
                 Annuler
               </button>
-              <button type="submit" disabled={saving} className="btn-primary h-10">
+              <button type="submit" disabled={saving} className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50">
                 {saving ? <FiLoader className="animate-spin" /> : "Enregistrer"}
               </button>
             </div>

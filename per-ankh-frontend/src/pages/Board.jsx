@@ -115,7 +115,7 @@ export default function Board() {
               </div>
               <button
                 type="button"
-                className="h-9 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white text-sm font-bold flex items-center gap-2 shadow-sm transition"
+              className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50"
               >
                 <FiShare2 />
                 Partager

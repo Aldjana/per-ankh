@@ -348,7 +348,7 @@ export default function TaskCardModal({
               type="button"
               onClick={handleSave}
               disabled={saving}
-              className="btn-primary h-10"
+              className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50"
             >
               {saving ? <FiLoader className="animate-spin" /> : "Enregistrer"}
             </button>

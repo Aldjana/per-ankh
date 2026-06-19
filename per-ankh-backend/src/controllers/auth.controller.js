@@ -56,6 +56,7 @@ export const register = async (req, res) => {
                     {
                         id: data.user.id,
                         full_name,
+                        email,
                     },
                 ]);
 

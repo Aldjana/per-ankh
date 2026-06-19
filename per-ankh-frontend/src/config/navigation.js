@@ -34,7 +34,7 @@ export const ROUTE_META = {
   "/settings": {
     title: "Paramètres",
     section: "Compte",
-    description: "Profil et configuration.",
+    description: "Profil",
   },
   "/search": {
     title: "Recherche",

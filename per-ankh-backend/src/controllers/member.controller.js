@@ -63,15 +63,16 @@ export const getWorkspaceMembers = async (req, res) => {
   }
 };
 
-// AJOUTER UN MEMBRE PAR USER_ID
+// AJOUTER UN MEMBRE PAR USER_ID OU EMAIL
 export const addWorkspaceMember = async (req, res) => {
   try {
-    const { workspace_id, user_id, role } = req.body;
+    const { workspace_id, user_id, email, role } = req.body;
     const currentUserId = req.user.id;
 
-    if (!workspace_id || !user_id) {
+    // Vérifier que soit user_id soit email est fourni
+    if (!workspace_id || (!user_id && !email)) {
       return res.status(400).json({
-        message: "workspace_id et user_id sont obligatoires.",
+        message: "workspace_id et (user_id ou email) sont obligatoires.",
       });
     }
 
@@ -86,15 +87,49 @@ export const addWorkspaceMember = async (req, res) => {
       });
     }
 
+    let targetUserId = user_id;
+
+    // Si email est fourni, chercher le user_id correspondant
+    if (email && !user_id) {
+      const { data: profile, error: profileError } = await supabaseAdmin
+        .from("profiles")
+        .select("id")
+        .eq("email", email)
+        .single();
+
+      if (profileError || !profile) {
+        return res.status(404).json({
+          message: `Utilisateur avec l'email "${email}" introuvable.`,
+        });
+      }
+
+      targetUserId = profile.id;
+    }
+
+    // Vérifier que l'utilisateur existe dans profiles
     const { data: profile, error: profileError } = await supabaseAdmin
       .from("profiles")
-      .select("id")
-      .eq("id", user_id)
+      .select("id, email")
+      .eq("id", targetUserId)
       .single();
 
     if (profileError || !profile) {
       return res.status(404).json({
-        message: "Utilisateur introuvable dans profiles.",
+        message: "Utilisateur introuvable.",
+      });
+    }
+
+    // Vérifier qu'il n'est pas déjà membre
+    const { data: existingMember, error: existingError } = await supabaseAdmin
+      .from("workspace_members")
+      .select("id")
+      .eq("workspace_id", workspace_id)
+      .eq("user_id", targetUserId)
+      .single();
+
+    if (existingMember) {
+      return res.status(400).json({
+        message: "Cet utilisateur est déjà membre du workspace.",
       });
     }
 
@@ -103,7 +138,7 @@ export const addWorkspaceMember = async (req, res) => {
       .insert([
         {
           workspace_id,
-          user_id,
+          user_id: targetUserId,
           role: role || "member",
         },
       ])
