@@ -245,7 +245,7 @@ export default function Notifications() {
             </h2>
             <p className="text-slate-500 mt-2">
               {filter === "unread"
-                ? "Vous êtes à jour — aucune notification non lue."
+                ? "Vous êtes à jour"
                 : "Les alertes de votre activité apparaîtront ici."}
             </p>
           </div>

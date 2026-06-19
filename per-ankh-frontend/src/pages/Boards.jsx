@@ -108,7 +108,7 @@ export default function Boards() {
       }
     } catch (err) {
       setError(err.response?.data?.message || "Erreur.");
-      
+
     } finally {
       setSaving(false);
     }
@@ -176,8 +176,13 @@ export default function Boards() {
             <FiFolder className="text-5xl text-slate-300 mx-auto" />
             <h2 className="font-black text-xl mt-4">Aucun board</h2>
 
-            <button type="button" onClick={openCreate} className="btn-primary mt-6">
-              <FiPlus /> Créer mon premier board
+            <button
+              type="button"
+              onClick={openCreate}
+              className="flex items-center gap-2 mx-auto disabled:opacity-50 bg-slate-900 text-white font-bold py-2 px-4 rounded-lg mt-6"
+            >
+              <FiPlus />
+              Créer mon premier board
             </button>
           </div>
         ) : (
