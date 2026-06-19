@@ -10,6 +10,7 @@ import {
   FiPaperclip,
   FiUpload,
 } from "react-icons/fi";
+import ConfirmDialog from "../ConfirmDialog";
 import { updateTask, deleteTask, moveTask } from "../../services/taskService";
 import { getWorkspaceMembers } from "../../services/memberService";
 import {
@@ -31,6 +32,8 @@ export default function TaskCardModal({
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const [form, setForm] = useState({
     title: "",
@@ -107,13 +110,17 @@ export default function TaskCardModal({
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Supprimer cette carte ?")) return;
     try {
+      setDeleting(true);
+      setError("");
       await deleteTask(task.id);
       onDeleted?.();
       onClose();
     } catch (err) {
       setError(err.response?.data?.message || "Impossible de supprimer.");
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
     }
   };
 
@@ -324,7 +331,7 @@ export default function TaskCardModal({
         <div className="shrink-0 p-4 border-t border-slate-200 flex items-center justify-between gap-2 bg-slate-50">
           <button
             type="button"
-            onClick={handleDelete}
+            onClick={() => setShowDeleteConfirm(true)}
             className="text-sm font-bold text-red-600 flex items-center gap-1 px-3 py-2 rounded-lg hover:bg-red-50"
           >
             <FiTrash2 /> Supprimer
@@ -348,6 +355,18 @@ export default function TaskCardModal({
           </div>
         </div>
       </div>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Supprimer la carte"
+        message={`Êtes-vous sûr de vouloir supprimer "${task.title}" ? Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        isDangerous={true}
+        isLoading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 }

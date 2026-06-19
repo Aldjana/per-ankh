@@ -48,7 +48,7 @@ export default function BoardProgressTab() {
             </div>
             <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-blue-500 to-violet-500 rounded-full transition-all"
+                className="h-full bg-slate-700 rounded-full transition-all"
                 style={{ width: `${s.pct}%` }}
               />
             </div>

@@ -7,6 +7,7 @@ import {
   deleteNote,
 } from "../../services/noteService";
 import CommentSection from "../../components/CommentSection";
+import ConfirmDialog from "../../components/ConfirmDialog";
 
 export default function BoardNotesTab() {
   const { workspaceId } = useOutletContext();
@@ -16,6 +17,8 @@ export default function BoardNotesTab() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [saving, setSaving] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     if (!workspaceId) return;
@@ -111,13 +114,7 @@ export default function BoardNotesTab() {
               <h3 className="text-xl font-black text-slate-900">{selected.title}</h3>
               <button
                 type="button"
-                onClick={async () => {
-                  if (window.confirm("Supprimer ?")) {
-                    await deleteNote(selected.id);
-                    setSelected(null);
-                    load();
-                  }
-                }}
+                onClick={() => setShowDeleteConfirm(true)}
                 className="text-xs font-bold text-red-600"
               >
                 Supprimer
@@ -130,6 +127,28 @@ export default function BoardNotesTab() {
           </>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Supprimer la note"
+        message={`Êtes-vous sûr de vouloir supprimer « ${selected?.title || ""} » ? Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        isDangerous={true}
+        isLoading={deleting}
+        onConfirm={async () => {
+          try {
+            setDeleting(true);
+            await deleteNote(selected.id);
+            setSelected(null);
+            await load();
+          } finally {
+            setDeleting(false);
+            setShowDeleteConfirm(false);
+          }
+        }}
+        onCancel={() => setShowDeleteConfirm(false)}
+      />
     </div>
   );
 }

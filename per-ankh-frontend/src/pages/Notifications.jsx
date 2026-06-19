@@ -9,6 +9,7 @@ import {
 } from "react-icons/fi";
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
+import ConfirmDialog from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
 import { useRealtimeRefresh } from "../hooks/useRealtimeRefresh";
 import { isSupabaseConfigured } from "../services/supabaseClient";
@@ -26,6 +27,9 @@ export default function Notifications() {
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
   const [filter, setFilter] = useState("all");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [notificationToDelete, setNotificationToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const getRealNotification = (notification) => {
     if (!notification) return {};
@@ -149,16 +153,17 @@ export default function Notifications() {
   };
 
   const handleDelete = async (notification) => {
-    const confirmDelete = window.confirm(
-      "Voulez-vous supprimer cette notification ?"
-    );
+    setNotificationToDelete(notification);
+    setShowDeleteConfirm(true);
+  };
 
-    if (!confirmDelete) return;
+  const confirmDelete = async () => {
+    if (!notificationToDelete) return;
 
     try {
-      setActionLoading(true);
+      setDeleting(true);
       setError("");
-      await deleteNotification(getNotificationId(notification));
+      await deleteNotification(getNotificationId(notificationToDelete));
       await fetchNotifications();
     } catch (err) {
       setError(
@@ -166,7 +171,9 @@ export default function Notifications() {
           "Impossible de supprimer cette notification."
       );
     } finally {
-      setActionLoading(false);
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+      setNotificationToDelete(null);
     }
   };
 
@@ -323,6 +330,21 @@ export default function Notifications() {
           </section>
         )}
       </div>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Supprimer la notification"
+        message="Êtes-vous sûr de vouloir supprimer cette notification ? Cette action est irréversible."
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        isDangerous={true}
+        isLoading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setNotificationToDelete(null);
+        }}
+      />
     </Layout>
   );
 }

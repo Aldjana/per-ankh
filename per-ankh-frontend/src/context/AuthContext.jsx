@@ -36,7 +36,6 @@ export const AuthProvider = ({ children }) => {
       // Appeler l'API pour logout côté serveur
       await api.post("/auth/logout");
     } catch (error) {
-      console.error("Erreur lors de la déconnexion:", error);
     } finally {
       // Nettoyer le localStorage et le state peu importe le résultat
       localStorage.removeItem("per_ankh_token");

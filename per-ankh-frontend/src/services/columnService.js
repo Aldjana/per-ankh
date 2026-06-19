@@ -3,8 +3,6 @@ import api from "./api";
 export const getColumnsByWorkspace = async (workspaceId) => {
   const response = await api.get(`/columns/workspace/${workspaceId}`);
 
-  console.log("REPONSE GET COLUMNS BY WORKSPACE :", response.data);
-
   if (Array.isArray(response.data)) return response.data;
   if (Array.isArray(response.data.columns)) return response.data.columns;
   if (Array.isArray(response.data.kanban_columns)) return response.data.kanban_columns;

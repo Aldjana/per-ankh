@@ -101,7 +101,7 @@ export default function Board() {
                 {members.slice(0, 4).map((m, i) => (
                   <div
                     key={m.id || i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 border-2 border-white flex items-center justify-center text-[10px] font-black text-white"
+                    className="w-8 h-8 rounded-full bg-slate-600 border-2 border-white flex items-center justify-center text-[10px] font-black text-white"
                     title={m.profiles?.full_name || "Membre"}
                   >
                     {(m.profiles?.full_name || "M").charAt(0)}

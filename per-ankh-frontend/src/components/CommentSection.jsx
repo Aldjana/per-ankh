@@ -7,6 +7,7 @@ import {
   FiEdit2,
 } from "react-icons/fi";
 import { useAuth } from "../context/AuthContext";
+import ConfirmDialog from "./ConfirmDialog";
 import { getWorkspaceMembers } from "../services/memberService";
 import {
   getCommentsByNote,
@@ -33,6 +34,9 @@ export default function CommentSection({
   const [members, setMembers] = useState([]);
   const [mentionSuggestions, setMentionSuggestions] = useState([]);
   const [showMentions, setShowMentions] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [commentToDelete, setCommentToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   const fetchComments = useCallback(async () => {
     if (!noteId && !taskId) return;
@@ -189,16 +193,26 @@ export default function CommentSection({
   };
 
   const handleDelete = async (commentId) => {
-    if (!window.confirm("Supprimer ce commentaire ?")) return;
+    setCommentToDelete(commentId);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!commentToDelete) return;
 
     try {
-      await deleteComment(commentId);
+      setDeleting(true);
+      await deleteComment(commentToDelete);
       await fetchComments();
       onCommentChange?.();
     } catch (err) {
       setError(
         err.response?.data?.message || "Impossible de supprimer le commentaire."
       );
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+      setCommentToDelete(null);
     }
   };
 
@@ -338,6 +352,21 @@ export default function CommentSection({
           </button>
         </div>
       </form>
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Supprimer le commentaire"
+        message="Êtes-vous sûr de vouloir supprimer ce commentaire ? Cette action est irréversible."
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        isDangerous={true}
+        isLoading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setCommentToDelete(null);
+        }}
+      />
     </div>
   );
 }

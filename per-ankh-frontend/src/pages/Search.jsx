@@ -191,7 +191,7 @@ export default function Search() {
             <button
               type="submit"
               disabled={loading}
-              className="h-12 px-6 rounded-2xl bg-gradient-to-r from-blue-600 to-violet-600 text-white font-black flex items-center gap-2 disabled:opacity-50"
+              className="h-12 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50"
             >
               {loading ? <FiLoader className="animate-spin" /> : <FiSearch />}
               Rechercher

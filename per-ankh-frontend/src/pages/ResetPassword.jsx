@@ -32,18 +32,9 @@ export default function ResetPassword() {
 
     if (token) {
       setAccessToken(token);
-      console.log("Access token extrait avec succès");
     }
     if (refresh) {
       setRefreshToken(refresh);
-      console.log("Refresh token extrait avec succès");
-    }
-
-    if (!token || !refresh) {
-      console.log("Token non trouvé dans l'URL");
-      console.log("URL complète:", window.location.href);
-      console.log("Query params:", Object.fromEntries(searchParams));
-      console.log("Hash:", window.location.hash);
     }
   }, [searchParams]);
 
@@ -87,7 +78,7 @@ export default function ResetPassword() {
     <div className="min-h-screen w-full bg-[linear-gradient(135deg,#07152f_0%,#173b92_55%,#4b1392_100%)] flex items-center justify-center px-4 py-6 text-white">
       <div className="w-full max-w-[390px] rounded-xl sm:rounded-2xl border border-white/20 bg-white/[0.13] backdrop-blur-xl shadow-2xl px-4 sm:px-6 py-5 sm:py-6">
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
+          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-slate-800 flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
             P
           </div>
 
@@ -122,7 +113,7 @@ export default function ResetPassword() {
             </div>
             <button
               onClick={() => navigate("/login")}
-              className="mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-xs sm:text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition"
+              className="mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-xs sm:text-sm shadow-xl shadow-slate-950/30 hover:scale-[1.01] transition"
             >
               Se connecter
             </button>
@@ -186,7 +177,7 @@ export default function ResetPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 sm:mt-6 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-xs sm:text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition disabled:opacity-60"
+              className="mt-5 sm:mt-6 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-xs sm:text-sm shadow-xl shadow-slate-950/30 hover:scale-[1.01] transition disabled:opacity-60"
             >
               {loading ? "Réinitialisation..." : "Réinitialiser le mot de passe"}
             </button>

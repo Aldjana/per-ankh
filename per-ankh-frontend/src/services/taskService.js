@@ -3,8 +3,6 @@ import api from "./api";
 export const getTasksByWorkspace = async (workspaceId) => {
   const response = await api.get(`/tasks/workspace/${workspaceId}`);
 
-  console.log("REPONSE GET TASKS BY WORKSPACE :", response.data);
-
   if (Array.isArray(response.data)) return response.data;
   if (Array.isArray(response.data.tasks)) return response.data.tasks;
   if (Array.isArray(response.data.taches)) return response.data.taches;

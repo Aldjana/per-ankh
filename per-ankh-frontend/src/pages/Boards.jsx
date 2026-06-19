@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi";
 import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
+import ConfirmDialog from "../components/ConfirmDialog";
 import {
   getWorkspaces,
   createWorkspace,
@@ -35,6 +36,9 @@ export default function Boards() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState({ name: "", description: "" });
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [workspaceToDelete, setWorkspaceToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetchList();
@@ -109,12 +113,23 @@ export default function Boards() {
 
   const handleDelete = async (w, e) => {
     e.stopPropagation();
-    if (!window.confirm(`Supprimer « ${getWorkspaceName(w)} » ?`)) return;
+    setWorkspaceToDelete(w);
+    setShowDeleteConfirm(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!workspaceToDelete) return;
     try {
-      await deleteWorkspace(getWorkspaceId(w));
+      setDeleting(true);
+      setError("");
+      await deleteWorkspace(getWorkspaceId(workspaceToDelete));
       await fetchList();
     } catch (err) {
       setError(err.response?.data?.message || "Suppression impossible.");
+    } finally {
+      setDeleting(false);
+      setShowDeleteConfirm(false);
+      setWorkspaceToDelete(null);
     }
   };
 
@@ -168,7 +183,7 @@ export default function Boards() {
                 key={getWorkspaceId(w) || i}
                 type="button"
                 onClick={() => openBoard(w)}
-                className="group card p-5 text-left hover:ring-2 hover:ring-blue-400 hover:shadow-lg transition min-h-[140px] flex flex-col justify-between bg-gradient-to-br from-[#07152f] to-[#1e3a6e] text-white border-0"
+                className="group card p-5 text-left hover:ring-2 hover:ring-slate-300 hover:shadow-lg transition min-h-[140px] flex flex-col justify-between bg-slate-900 text-white border-0"
               >
                 <div>
                   <h3 className="font-black text-lg leading-tight">
@@ -253,6 +268,21 @@ export default function Boards() {
           </form>
         </div>
       )}
+
+      <ConfirmDialog
+        isOpen={showDeleteConfirm}
+        title="Supprimer le tableau"
+        message={`Êtes-vous sûr de vouloir supprimer « ${workspaceToDelete ? getWorkspaceName(workspaceToDelete) : ""} » ? Cette action est irréversible.`}
+        confirmText="Supprimer"
+        cancelText="Annuler"
+        isDangerous={true}
+        isLoading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteConfirm(false);
+          setWorkspaceToDelete(null);
+        }}
+      />
     </Layout>
   );
 }

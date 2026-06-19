@@ -8,8 +8,6 @@ export const getWorkspaceById = async (id) => {
 export const getWorkspaces = async () => {
   const response = await api.get("/workspaces");
 
-  console.log("REPONSE GET WORKSPACES :", response.data);
-
   if (Array.isArray(response.data)) {
     return response.data;
   }

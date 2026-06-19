@@ -287,7 +287,7 @@ export default function KanbanBoard({
                           <div className="flex items-center gap-1 sm:gap-2 min-w-0">
                             {task.assigned_to_profile?.full_name ? (
                               <div
-                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center text-[7px] sm:text-[9px] font-black text-white shrink-0"
+                                className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-slate-600 flex items-center justify-center text-[7px] sm:text-[9px] font-black text-white shrink-0"
                                 title={task.assigned_to_profile.full_name}
                               >
                                 {task.assigned_to_profile.full_name.charAt(0)}

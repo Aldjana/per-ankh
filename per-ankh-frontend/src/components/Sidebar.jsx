@@ -24,7 +24,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
 
   const panel = (
     <div className="flex flex-col h-full items-center py-4">
-      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-lg font-black text-white shadow-lg mb-6 shrink-0">
+      <div className="w-11 h-11 rounded-xl bg-slate-800 flex items-center justify-center text-lg font-black text-white shadow-lg mb-6 shrink-0">
         P
       </div>
 
@@ -63,7 +63,7 @@ export default function Sidebar({ mobileOpen = false, onMobileClose }) {
         })}
 
         <div
-          className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-400 to-violet-500 flex items-center justify-center text-xs font-black text-white mt-2"
+          className="w-9 h-9 rounded-full bg-slate-600 flex items-center justify-center text-xs font-black text-white mt-2"
           title={user?.email}
         >
           {initials}

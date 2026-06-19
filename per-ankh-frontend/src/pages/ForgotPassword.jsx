@@ -39,7 +39,7 @@ export default function ForgotPassword() {
         </button>
 
         <div className="flex items-center gap-3 sm:gap-4">
-          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-gradient-to-br from-[#3b82f6] to-[#8b2cff] flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
+          <div className="w-[45px] h-[45px] sm:w-[50px] sm:h-[50px] rounded-xl sm:rounded-[14px] bg-slate-800 flex items-center justify-center text-[22px] sm:text-[26px] font-semibold shadow-xl">
             P
           </div>
 
@@ -76,7 +76,7 @@ export default function ForgotPassword() {
             </div>
             <button
               onClick={() => navigate("/login")}
-              className="mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-xs sm:text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition flex items-center justify-center gap-2 sm:gap-3"
+              className="mt-4 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-xs sm:text-sm shadow-xl shadow-slate-950/30 hover:scale-[1.01] transition flex items-center justify-center gap-2 sm:gap-3"
             >
               Retour à la connexion
               <FiArrowRight className="text-base sm:text-lg" />
@@ -106,7 +106,7 @@ export default function ForgotPassword() {
             <button
               type="submit"
               disabled={loading}
-              className="mt-5 sm:mt-6 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-gradient-to-r from-[#3185ff] to-[#8b2cff] font-bold text-xs sm:text-sm shadow-xl shadow-blue-950/30 hover:scale-[1.01] transition disabled:opacity-60 flex items-center justify-center gap-2 sm:gap-3"
+              className="mt-5 sm:mt-6 w-full h-[44px] sm:h-[48px] rounded-lg sm:rounded-xl bg-slate-900 hover:bg-slate-800 font-bold text-xs sm:text-sm shadow-xl shadow-slate-950/30 hover:scale-[1.01] transition disabled:opacity-60 flex items-center justify-center gap-2 sm:gap-3"
             >
               {loading ? "Envoi..." : "Envoyer le lien"}
               {!loading && <FiArrowRight className="text-base sm:text-lg" />}
