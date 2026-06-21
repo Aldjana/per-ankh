@@ -98,6 +98,20 @@ export default function Search() {
     return "Moyenne";
   };
 
+  const statusLabel = (s) => {
+    if (s === "todo") return "À faire";
+    if (s === "in_progress") return "En cours";
+    if (s === "done") return "Terminé";
+    return s;
+  };
+
+  const statusColor = (s) => {
+    if (s === "todo") return "bg-slate-50 text-slate-600";
+    if (s === "in_progress") return "bg-blue-50 text-blue-600";
+    if (s === "done") return "bg-emerald-50 text-emerald-600";
+    return "bg-slate-50 text-slate-600";
+  };
+
   return (
     <Layout>
       <div className="space-y-5">
@@ -167,23 +181,26 @@ export default function Search() {
                 ))}
               </select>
 
+              <select
+                value={filters.status}
+                onChange={(e) =>
+                  setFilters((f) => ({ ...f, status: e.target.value }))
+                }
+                className="h-11 bg-slate-100 rounded-2xl px-4 text-sm font-semibold outline-none"
+              >
+                <option value="">Statut</option>
+                <option value="todo">À faire</option>
+                <option value="in_progress">En cours</option>
+                <option value="done">Terminé</option>
+              </select>
+
               <input
                 type="text"
                 value={filters.tag}
                 onChange={(e) =>
                   setFilters((f) => ({ ...f, tag: e.target.value }))
                 }
-                placeholder="Tag"
-                className="h-11 bg-slate-100 rounded-2xl px-4 text-sm outline-none"
-              />
-
-              <input
-                type="text"
-                value={filters.status}
-                onChange={(e) =>
-                  setFilters((f) => ({ ...f, status: e.target.value }))
-                }
-                placeholder="Statut"
+                placeholder="Tag (ex: urgent, bug...)"
                 className="h-11 bg-slate-100 rounded-2xl px-4 text-sm outline-none"
               />
             </div>
@@ -237,6 +254,9 @@ export default function Search() {
                       <span className="text-xs font-bold bg-orange-50 text-orange-600 px-3 py-1 rounded-full inline-flex items-center gap-1">
                         <FiFlag />
                         {priorityLabel(task.priority)}
+                      </span>
+                      <span className={`text-xs font-bold px-3 py-1 rounded-full ${statusColor(task.status)}`}>
+                        {statusLabel(task.status)}
                       </span>
                       {task.assigned_to_profile?.full_name && (
                         <span className="text-xs font-bold bg-blue-50 text-blue-600 px-3 py-1 rounded-full inline-flex items-center gap-1">
