@@ -24,7 +24,7 @@ export function useRealtimeRefresh({
       return;
     }
 
-    // Éviter les doubles subscriptions si le canal existe déjà
+   
     if (channelRef.current && subscriptionStateRef.current === "SUBSCRIBED") {
       return;
     }
@@ -44,7 +44,7 @@ export function useRealtimeRefresh({
           ...(filter ? { filter } : {}),
         },
         (payload) => {
-          const eventType = payload.eventType; // INSERT, UPDATE, DELETE
+          const eventType = payload.eventType; // INSERT
           const data = payload.new || payload.old;
           
           // Exécuter onData si fourni

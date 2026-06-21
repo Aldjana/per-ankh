@@ -85,8 +85,8 @@ export default function BoardMembersTab() {
           <input
             value={userIdentifier}
             onChange={(e) => setUserIdentifier(e.target.value)}
-            placeholder="Email ou ID"
-            title="Email (ex: user@mail.com) ou ID utilisateur"
+            placeholder="Email "
+            title="Email (ex: user@mail.com)"
             className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
             required
             disabled={adding}

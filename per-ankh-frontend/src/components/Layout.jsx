@@ -96,14 +96,12 @@ export default function Layout({ children, fullWidth = false, hideNavbar = false
                 }
               );
             }
-
-            // Émettre l'événement pour que Notifications.jsx recharge la liste
             notificationEmitter.emit('notification-received', { data, eventType });
           }
         }
       )
       .subscribe((status) => {
-        // Realtime channel status change (SUBSCRIBED, CLOSED, CHANNEL_ERROR)
+        
       });
 
     channelRef.current = channel;
