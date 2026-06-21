@@ -1,4 +1,4 @@
-import { supabase } from "../config/supabase.js";
+import { supabaseAdmin } from "../config/supabase.js";
 
 export const protect = async (req, res, next) => {
   try {
@@ -12,7 +12,7 @@ export const protect = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    const { data, error } = await supabase.auth.getUser(token);
+    const { data, error } = await supabaseAdmin.auth.getUser(token);
 
     if (error || !data.user) {
       return res.status(401).json({

@@ -14,3 +14,17 @@ export const isSupabaseConfigured = () =>
 export const supabase = isSupabaseConfigured()
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
+
+// Authentifier le client Supabase avec le JWT token
+export const authenticateSupabaseClient = async (token) => {
+  if (!supabase || !token) return;
+  
+  try {
+    await supabase.auth.setSession({
+      access_token: token,
+      refresh_token: token,
+    });
+  } catch (err) {
+    console.error('Erreur lors de l\'authentification Supabase:', err);
+  }
+};

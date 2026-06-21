@@ -239,9 +239,8 @@ export default function KanbanBoard({
                   );
 
                   return (
-                    <button
+                    <div
                       key={task.id}
-                      type="button"
                       draggable
                       onDragStart={() => setDraggedTask(task)}
                       onDragEnd={() => setDraggedTask(null)}
@@ -347,7 +346,7 @@ export default function KanbanBoard({
                           </div>
                         </div>
                       </div>
-                    </button>
+                    </div>
                   );
                 })}
 

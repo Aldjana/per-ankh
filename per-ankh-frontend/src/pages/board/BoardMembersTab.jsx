@@ -75,69 +75,80 @@ export default function BoardMembersTab() {
   }
 
   return (
-    <div className="card p-5 max-w-3xl space-y-6">
+    <div className="card p-4 sm:p-5 max-w-3xl space-y-4 sm:space-y-6">
 
       {error && (
         <p className="text-sm text-red-600 font-semibold">{error}</p>
       )}
-      <form onSubmit={handleAdd} className="flex flex-wrap gap-2">
-        <input
-          value={userIdentifier}
-          onChange={(e) => setUserIdentifier(e.target.value)}
-          placeholder="Email (ex: user@mail.com) ou ID utilisateur"
-          className="flex-1 min-w-[220px] h-10 rounded-lg border border-slate-200 px-3 text-sm"
-          required
-          disabled={adding}
-        />
+      <form onSubmit={handleAdd} className="flex flex-col gap-3 sm:flex-row sm:gap-2 sm:items-stretch">
+        <div className="flex-1">
+          <input
+            value={userIdentifier}
+            onChange={(e) => setUserIdentifier(e.target.value)}
+            placeholder="Email ou ID"
+            title="Email (ex: user@mail.com) ou ID utilisateur"
+            className="w-full h-10 rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400"
+            required
+            disabled={adding}
+          />
+        </div>
         <select
           value={role}
           onChange={(e) => setRole(e.target.value)}
-          className="h-10 rounded-lg border border-slate-200 px-3 text-sm"
+          className="h-10 rounded-lg border border-slate-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-slate-400 sm:w-28"
           disabled={adding}
         >
           <option value="member">Member</option>
           <option value="admin">Admin</option>
         </select>
-        <button type="submit" disabled={adding} className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center gap-2 disabled:opacity-50"
+        <button type="submit" disabled={adding} className="h-10 px-6 rounded-2xl bg-slate-900 hover:bg-slate-800 text-white font-black flex items-center justify-center gap-2 disabled:opacity-50 transition whitespace-nowrap"
         >
-          {adding ? <FiLoader className="animate-spin" /> : <FiPlus />} Ajouter
+          {adding ? <FiLoader className="animate-spin" /> : <FiPlus />} <span className="hidden sm:inline">Ajouter</span>
         </button>
       </form>
-      <ul className="divide-y divide-slate-100">
+      <ul className="divide-y divide-slate-100 -mx-5 sm:mx-0 rounded-lg border border-slate-100">
         {members.map((m) => (
           <li
             key={m.id}
-            className="py-3 flex items-center justify-between gap-4"
+            className="px-5 py-4 sm:px-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 hover:bg-slate-50 transition"
           >
-            <div>
-              <p className="font-bold text-slate-900">
-                {m.profiles?.full_name || "Membre"}
-              </p>
-              <p className="text-xs text-slate-400 font-mono">
-                {m.user_id || m.profiles?.id}
-              </p>
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                {m.profiles?.full_name?.charAt(0).toUpperCase() || "M"}
+              </div>
+              <div className="min-w-0">
+                <p className="font-semibold text-slate-900 truncate">
+                  {m.profiles?.full_name || "Membre"}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-end sm:justify-end sm:flex-nowrap">
               {m.role === "owner" ? (
-                <span className="text-xs font-bold text-violet-700 flex items-center gap-1">
-                  <FiShield /> Owner
+                <span className="text-xs font-bold text-violet-700 flex items-center gap-1 px-3 py-1.5 bg-violet-50 rounded-md">
+                  <FiShield className="text-sm" /> Owner
                 </span>
               ) : (
                 <>
                   <select
                     value={m.role}
-                    onChange={(e) =>
-                      updateMemberRole(m.id, e.target.value).then(load)
-                    }
-                    className="h-9 rounded-lg border border-slate-200 text-sm px-2"
+                    onChange={(e) => {
+                      updateMemberRole(m.id, e.target.value).then(() => {
+                        load();
+                      });
+                    }}
+                    className="h-9 rounded-lg border border-slate-200 text-sm px-2 focus:outline-none focus:ring-2 focus:ring-slate-400"
                   >
                     <option value="member">Member</option>
                     <option value="admin">Admin</option>
                   </select>
                   <button
                     type="button"
-                    onClick={() => removeWorkspaceMember(m.id).then(load)}
-                    className="w-9 h-9 rounded-lg bg-red-50 text-red-600 flex items-center justify-center"
+                    onClick={() => {
+                      removeWorkspaceMember(m.id).then(() => {
+                        load();
+                      });
+                    }}
+                    className="w-9 h-9 rounded-lg bg-red-50 text-red-600 flex items-center justify-center hover:bg-red-100 transition"
                   >
                     <FiTrash2 />
                   </button>

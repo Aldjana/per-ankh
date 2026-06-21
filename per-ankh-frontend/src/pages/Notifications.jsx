@@ -12,8 +12,7 @@ import Layout from "../components/Layout";
 import PageHeader from "../components/PageHeader";
 import ConfirmDialog from "../components/ConfirmDialog";
 import { useAuth } from "../context/AuthContext";
-import { useRealtimeRefresh } from "../hooks/useRealtimeRefresh";
-import { isSupabaseConfigured } from "../services/supabaseClient";
+import { notificationEmitter } from "../services/eventEmitter";
 import {
   getMyNotifications,
   markNotificationAsRead,
@@ -112,13 +111,28 @@ export default function Notifications() {
     fetchNotifications();
   }, [fetchNotifications]);
 
-  useRealtimeRefresh({
-    channelName: `notifications-${user?.id || "guest"}`,
-    table: "notifications",
-    filter: user?.id ? `user_id=eq.${user.id}` : undefined,
-    enabled: Boolean(user?.id) && isSupabaseConfigured(),
-    onRefresh: fetchNotifications,
-  });
+  // Écouter les notifications en temps réel depuis Layout.jsx
+  useEffect(() => {
+    // Créer une fonction qui sera appelée quand une notification arrive
+    const handleNotificationEvent = (payload) => {
+      // Recharger les notifications
+      setLoading(true);
+      getMyNotifications()
+        .then(list => {
+          setNotifications(Array.isArray(list) ? list : []);
+          setError("");
+        })
+        .catch(err => {
+          setError(err.response?.data?.message || "Impossible de charger les notifications.");
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+    
+    const unsubscribe = notificationEmitter.on('notification-received', handleNotificationEvent);
+    return unsubscribe;
+  }, []);
 
   const handleMarkAsRead = async (notification) => {
     if (isRead(notification)) return;
