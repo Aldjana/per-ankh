@@ -33,7 +33,6 @@ export default function Settings() {
       <div className="max-w-4xl space-y-6">
         <PageHeader />
 
-        {/* Profil Card - Premium Design */}
         <section className="card overflow-hidden">
           {loading ? (
             <div className="text-center py-16 text-slate-500">Chargement...</div>

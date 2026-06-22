@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: per-ankh-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: SUPABASE_URL
+        scope: all
+      - key: SUPABASE_ANON_KEY
+        scope: all
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        scope: all
+      - key: CORS_ORIGIN
+        scope: all
